@@ -28,6 +28,3 @@ jobs:
           # Install dependencies
           export PATH="/opt/bitnami/nodejs/bin:$PATH"
           npm install
-          
-          # Restart the PM2 dev process
-          pm2 restart client  # replace 'client' with your actual PM2 process name
