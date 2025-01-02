@@ -22,7 +22,7 @@ jobs:
           cd /opt/bitnami/projects/client
           
           # Ensure we have the latest code
-          git fetch origin main
+          git pull origin main
           git reset --hard origin/main
           
           # Install dependencies
