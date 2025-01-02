@@ -186,7 +186,7 @@ const RecruitmentProjects = () => {
   return (
     <div className="p-6">
       <div className='flex justify-between items-center'>
-        <h1 className="text-2xl font-bold mb-6">Recruitment Project</h1>
+        <h1 className="text-2xl font-bold mb-6">Recruitment Projects</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button>Add Project</Button>
