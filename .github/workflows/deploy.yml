@@ -22,9 +22,12 @@ jobs:
           cd /opt/bitnami/projects/client
           
           # Ensure we have the latest code
-          git pull origin main
+          git fetch origin main
           git reset --hard origin/main
           
           # Install dependencies
           export PATH="/opt/bitnami/nodejs/bin:$PATH"
           npm install
+          
+          # Restart the PM2 dev process
+          pm2 restart client  # replace 'client' with your actual PM2 process name
