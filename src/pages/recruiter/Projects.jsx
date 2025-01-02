@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label"
 import { FadeLoader, PulseLoader } from 'react-spinners';
 import { addCandidateNote, createProject, getProjects, projectNote, updateCandidateStatus } from '@/services/api/api';
 import ErrorToast from '@/components/toasts/error';
-import EndProject from './project-components/endProject';
+import EndProject from './project-components/EndProject';
 
 const RecruitmentProjects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
