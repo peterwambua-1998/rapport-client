@@ -57,9 +57,9 @@ const PublicRoutes = [
     key: "jobseeker-login",
   },
   {
-    path: "/jobseeker/verify/:token",
+    path: "/jobseeker/verify",
     element: <JobSeekerVerifyEmail />,
-    key: "jobseeker-login",
+    key: "jobseeker-verify",
   },
 
   { path: "/admin/login", element: <AdminLogin />, key: "admin-login" },

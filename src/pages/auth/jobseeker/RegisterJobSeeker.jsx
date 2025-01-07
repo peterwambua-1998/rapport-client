@@ -24,6 +24,8 @@ import VideoRecorder from "@/pages/jobseeker/VideoRecording";
 import { PulseLoader } from "react-spinners";
 import ErrorToast from "@/components/toasts/error";
 import HeaderNav from "../header/header";
+import { io } from "socket.io-client";
+import SuccessToast from "@/components/toasts/success";
 
 export default function RegisterJobSeekerPage() {
 
@@ -63,11 +65,18 @@ export default function RegisterJobSeekerPage() {
   const [showRecorder, setShowRecorder] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoSource, setVideoSource] = useState(null);
-
-  const handleStartRecording = () => {
-    setShowRecorder(true);
-    setVideoUrl(false);
-  };
+  const [open, setOpen] = useState(false);
+  const [videoRequired, setVideoRequired] = useState(false);
+  const [openUploadStatus, setOpenUploadStatus] = useState(false);
+  const [videoStatus, setVideoStatus] = useState(true);
+  const [videoStatusLoading, setVideoStatusLoading] = useState(false);
+  const change = false;
+  const [emailData,  setEmailData] = useState(null);
+ 
+  // const handleStartRecording = () => {
+  //   setShowRecorder(true);
+  //   setVideoUrl(false);
+  // };
 
   const handleStopRecording = (url, blob) => {
     setVideoUrl(url);
@@ -84,8 +93,45 @@ export default function RegisterJobSeekerPage() {
     return data.filter(item => item.status === 1);
   };
 
+  const setIoUserId = () => { 
+    const userId = Math.floor(Math.random() * 10001);
+    sessionStorage.setItem('ioUserId', userId);
+    return userId;
+  }
+
+  useEffect(() => {
+    setIoUserId();
+  }, [change]);
+
   // Fetch data with error handling and display meaningful messages
   useEffect(() => {
+    const ioUserId = sessionStorage.getItem('ioUserId');
+    console.log(ioUserId);
+
+    const socket = io(API_BASE_URL, {
+      query: { userId: ioUserId }, // Pass the userId as a query parameter
+    });
+
+    socket.on('video-status-update', (data) => {
+      try {
+        setOpenUploadStatus(true);
+        console.log('Received update:', data.percentage);
+        setPercentage(data.percentage)
+        if (data.percentage == 100 && data.error == null) {
+          SuccessToast("Update profile successful!");
+          setVideoSource(null)
+          setOpenUploadStatus(false);
+          sessionStorage.setItem('pendingVerificationEmail', emailData);
+          navigate('/jobseeker/verify');
+        } else {
+          setVideoStatusLoading(false);
+          setVideoStatus(false);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    });
+
     const fetchData = async () => {
       try {
         const [
@@ -119,7 +165,11 @@ export default function RegisterJobSeekerPage() {
 
   // Optimized handleChange function
   const handleChange = (e) => {
-    const { name, value, checked, type, files } = e.target;
+    const { name, value, checked, type, files, } = e.target;
+
+    if (name == "email") {
+      setEmailData(value);
+    }
     setFormData((prev) => {
       if (type === "file") {
         if (name == 'video') {
@@ -128,7 +178,8 @@ export default function RegisterJobSeekerPage() {
 
         return { ...prev, [name]: files[0] };
       } else if (name.startsWith("skills.")) {
-        const skillId = name.split(".")[1];
+        // get data-id of skill input
+        const skillId = e.target.getAttribute("data-id");
         const skill = skills.find((s) => s.id == skillId);
 
         if (checked) {
@@ -136,11 +187,11 @@ export default function RegisterJobSeekerPage() {
             ...prev,
             skills: {
               ...prev.skills,
-              [skill.name]: { id: skill.id, name: skill.name },
+              [skillId]: { id: skill.id, name: skill.name },
             },
           };
         } else {
-          const { [skill.name]: _, ...restSkills } = prev.skills; // Remove unchecked skill
+          const { [skillId]: _, ...restSkills } = prev.skills; // Remove unchecked skill
           return { ...prev, skills: restSkills };
         }
       } else {
@@ -191,6 +242,7 @@ export default function RegisterJobSeekerPage() {
     }
 
     const profileData = new FormData();
+    profileData.append("ioUserId", sessionStorage.getItem('ioUserId'));
 
     // Append all other fields
     Object.keys(formData).forEach((key) => {
@@ -209,6 +261,10 @@ export default function RegisterJobSeekerPage() {
 
     if (formData.video) {
       profileData.append("video", formData.video);
+      setVideoRequired(false);
+    } else {
+      setVideoRequired(true);
+      return;
     }
 
     try {
@@ -231,16 +287,12 @@ export default function RegisterJobSeekerPage() {
           percent = Math.floor((loaded * 100) / total);
           console.log("options");
           console.log(percent);
-          setPercentage(percent)
-
           // if (percent < 100) {
           //   console.log(percent);
           //   setPercentage(percent)
           // }
         }
       });
-      setPercentage(0)
-      // const response = await registerJobseeker(profileData);
       setIsSuccess(true)
       setFormData({
         fullName: "",
@@ -261,6 +313,7 @@ export default function RegisterJobSeekerPage() {
         profilePicture: null,
         termsAccepted: false,
       });
+
     } catch (err) {
       // setError(
       //   err.response?.data?.message || "Registration failed. Please try again."
@@ -277,10 +330,6 @@ export default function RegisterJobSeekerPage() {
     fileInputRef.current.click();
   };
 
-  const handleButtonClickVideo = () => {
-    videoInputRef.current.click();
-  };
-
   const handleLinkedInLogin = async () => {
     await linkedInLogin("job_seeker");
   };
@@ -290,38 +339,10 @@ export default function RegisterJobSeekerPage() {
       ? URL.createObjectURL(formData.profilePicture)
       : formData.profilePicture;
 
-  if (isSuccess) {
-    return (
-      <div>
-        <HeaderNav />
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-0">
-          <div className="w-full max-w-md mb-6 p-8 space-y-8 bg-white rounded-lg shadow-md mt-8">
-            <h2 className="text-2xl font-bold text-green-600">Success!</h2>
-            <p className="text-gray-700">
-              Your profile has been successfully created.
-            </p>
-            <p className="text-gray-600">
-              A confirmation link has been sent to your email. Please verify your email to complete the registration process.
-            </p>
-            <div className="mt-6 text-center">
-              <Link
-                to="/jobseeker/login"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500"
-              >
-                Go to Login
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
       <HeaderNav />
       <div className="min-h-screen bg-gray-50 flex items-center justify-center mt-2">
-
         <div className="bg-white shadow-lg rounded-lg w-full max-w-2xl p-6 space-y-6">
           {/* Title and LinkedIn Button */}
           <h1 className="text-2xl font-bold text-center text-gray-900">
@@ -398,6 +419,7 @@ export default function RegisterJobSeekerPage() {
                   defaultValue={formData.email}
                   onChange={handleChange}
                   required
+                  
                 />
               </div>
               <div>
@@ -547,8 +569,9 @@ export default function RegisterJobSeekerPage() {
                   <label key={skill.id} className="flex items-center space-x-2">
                     <input
                       type="checkbox"
+                      data-id={skill.id}
                       name={`skills.${skill.id}`}
-                      checked={formData.skills[skill.name] || false}
+                      checked={formData.skills[skill.id] || false}
                       onChange={handleChange}
                       className="h-4 w-4"
                     />
@@ -575,32 +598,17 @@ export default function RegisterJobSeekerPage() {
             <div className="space-y-2">
               <Label>Introduction Video</Label>
               {!showRecorder && (
-                <div className="flex space-x-4">
-                  {/* <Button variant="default" type="button" className="bg-blue-500" onClick={handleStartRecording}>
-                    Start Recording
-                  </Button> */}
-                  <Button variant="default" className="bg-blue-500 hover:bg-blue-700 mb-2" onClick={handleButtonClickVideo} type="button">
-                    Upload Video
-                  </Button>
-                  <input
-                    id="uploadVideo"
-                    type="file"
-                    name="video"
-                    accept="video/*"
-                    onChange={handleChange}
-                    className="hidden"
-                    ref={videoInputRef}
-                  />
+                <div className="">
+                  <VideoRecorder open={open} setOpen={setOpen} onStopRecording={handleStopRecording} onCancelRecording={handleCancelRecording} />
                 </div>
               )}
+              {
+                videoRequired && (
+                  <p className="text-red-500">Please record an introduction video</p>
+                )
+              }
 
-              {showRecorder && (
-                <div className="mt-4">
-                  <VideoRecorder onStopRecording={handleStopRecording} onCancelRecording={handleCancelRecording} />
-                </div>
-              )}
-
-              {videoSource && (
+              {/* {videoSource && (
                 <div>
                   {typeof videoSource === 'string' ? (
                     <video src={videoSource} controls width="320" height="240" />
@@ -608,7 +616,7 @@ export default function RegisterJobSeekerPage() {
                     <video src={URL.createObjectURL(videoSource)} controls width="320" height="240" />
                   )}
                 </div>
-              )}
+              )} */}
 
               <ul className="text-gray-600 text-sm space-y-1">
                 <li className="flex items-center mb-4 gap-2 text-gray-700">
@@ -645,7 +653,9 @@ export default function RegisterJobSeekerPage() {
                 </Label>
               </div>
             </div>
-            {loading ? <Progress value={percentage} /> : <></>}
+
+            
+
             <Button
               type="submit"
               disabled={loading}
@@ -667,7 +677,27 @@ export default function RegisterJobSeekerPage() {
           </p>
         </div>
       </div>
+      <StatusModal isOpen={openUploadStatus}  percentage={percentage} />
     </div>
-
   );
+}
+
+
+const StatusModal = ({ isOpen, percentage }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-hidden h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div className="mt-3 text-center">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-6">
+            Upload status
+          </h3>
+          <Progress value={percentage} />
+          <p>{percentage}%</p>
+          <p className="text-sm mt-4">Upload in progress please be patient...</p>
+        </div>
+      </div>
+    </div>
+  )
 }

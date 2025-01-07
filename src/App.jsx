@@ -33,7 +33,7 @@ function App() {
   return (
     <Router>
       <Toaster />
-      {/* <RequireProfile /> */}
+      <RequireProfile />
       <Routes>
         {/* Public Routes with PublicLayout */}
         <Route element={<PublicLayout />}>

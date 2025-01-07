@@ -1,69 +1,97 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import ErrorToast from "@/components/toasts/error";
+import { useAuth } from "@/context/AuthContext";
 import { verifyEmail } from "@/services/api/api";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const VerifyEmail = () => {
-  const navigate = useNavigate();
-  const { token } = useParams();
-  const [status, setStatus] = useState({
-    isLoading: true,
-    isSuccess: false,
-    error: "",
-  });
-
-  useEffect(() => {
-    const verifyJobseekerEmail = async () => {
-      try {
-        const response = await verifyEmail(token);
-        if (response.data.success) {
-          console.log(response.data)
-          navigate(`/jobseeker/set-password/${response.data.user.id}`);
-          setStatus({ isLoading: false, isSuccess: true, error: "" });
-        } else {
-          throw new Error("Invalid or expired verification link.");
-        }
-      } catch (err) {
-        setStatus({
-          isLoading: false,
-          isSuccess: false,
-          error: err.response?.data?.message || err.message || "Verification failed. Please try again.",
-        });
-      }
-    };
-
-    verifyJobseekerEmail();
-  }, [token]);
-
+function MainComponent({ isOpen, onClose, verifyJobseekerEmail }) {
+  const [verificationCode, setVerificationCode] = React.useState("");
+  
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <div className="w-full max-w-md p-8 mb-6 space-y-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center">Email Verification</h2>
-        {status.isLoading ? (
-          <p className="text-center text-gray-600">Verifying your email...</p>
-        ) : status.isSuccess ? (
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-4">Your email has been successfully verified.</p>
-            <Link
-              to="/jobseeker/login"
-              className="text-blue-600 hover:text-blue-500 font-medium"
-            >
-              Return to Login
-            </Link>
+    <div>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 className="text-2xl font-roboto mb-4">Verify Your Address</h2>
+            <p className="font-roboto mb-6">
+              Enter the verification code sent to your mailing address:
+            </p>
+            <input
+              type="text"
+              name="verificationCode"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+              placeholder="Enter verification code"
+            />
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded font-roboto"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => verifyJobseekerEmail(verificationCode)}
+                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded font-roboto"
+              >
+                Verify
+              </button>
+            </div>
           </div>
-        ) : (
-          <div className="text-center">
-            <p className="text-sm text-red-500 mb-4">{status.error}</p>
-            {/* <Link
-              to="/jobseeker/resend-verification"
-              className="text-blue-600 hover:text-blue-500 font-medium"
-            >
-              Resend Verification Email
-            </Link> */}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
-};
+}
+
+function VerifyEmail() {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const {refresh} = useAuth();
+
+  useEffect(() => {
+    const email = sessionStorage.getItem('pendingVerificationEmail');
+    if (!email) {
+      navigate('/jobseeker/register');
+    }
+  }, []);
+
+  const verifyJobseekerEmail = async (verificationCode) => {
+    try {
+      const response = await verifyEmail(verificationCode);
+      console.log(response.data.status)
+      if (response.data.status) {
+        console.log(response.data)
+        sessionStorage.removeItem('pendingVerificationEmail');
+        refresh();
+        navigate("/jobseeker/dashboard");
+      } else {
+        ErrorToast("Invalid or expired verification link.");
+      }
+    } catch (err) {
+      console.log(err)
+      ErrorToast(err.response?.data?.message || err.message || "Verification failed. Please try again.");
+      navigate(`/jobseeker/register`);
+    }
+  };
+
+
+  return (
+    <div className="p-4">
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-roboto"
+      >
+        Open Verification Modal
+      </button>
+      <MainComponent
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        verifyJobseekerEmail={verifyJobseekerEmail}
+      />
+    </div>
+  );
+}
 
 export default VerifyEmail;

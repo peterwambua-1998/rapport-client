@@ -18,16 +18,14 @@ const Dashboard = () => {
   const [userProfile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { updatePhoto } = useUserProfile();
+  const { photo } = useUserProfile();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await getProfile();
         setProfile(response.data);
-        if (response.data.avatar) {
-          updatePhoto(getImageUrl((response.data.avatar)))
-        }
+        
       } catch (err) {
         setError("Error fetching recruiter profile.");
       } finally {
@@ -79,13 +77,13 @@ const Dashboard = () => {
     ? getImageUrl(avatar)
     : profilePic;
 
-
+  
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-4">
       <div className="max-w-4xl w-full bg-white rounded-xl shadow-md overflow-hidden">
         {/* Header Section */}
         <div
-          className="relative bg-blue-500 h-32"
+          className="relative bg-blue-500 h-48"
           style={{
             background: `url(${coverPhoto})`,
             boxShadow: "inset 0 0 0 2000px rgba(39, 126, 245, 0.7)",
@@ -93,8 +91,8 @@ const Dashboard = () => {
         >
           <div className="absolute -bottom-12 left-6">
             <img
-              src={profilePhoto}
-              alt="Sarah Johnson"
+              src={photo}
+              alt={name}
               className="w-24 h-24 rounded-full border-4 border-white"
             />
           </div>
@@ -124,7 +122,7 @@ const Dashboard = () => {
           </div>
 
           <p className="text-sm text-gray-600">
-            {role} at {company_name}
+            {role} at {company}
           </p>
           <div className="flex items-center text-gray-500 mt-6">
             <MdLocationOn />

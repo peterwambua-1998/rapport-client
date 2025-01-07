@@ -14,11 +14,19 @@ import { IoPersonSharp } from "react-icons/io5";
 import { FaCamera } from "react-icons/fa";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import VideoRecorder from "@/pages/jobseeker/VideoRecording";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import SuccessToast from "@/components/toasts/success";
+import { PulseLoader } from "react-spinners";
+import { Progress } from "@/components/ui/progress";
+import { io } from "socket.io-client";
+import { useAuth } from "@/context/AuthContext";
+import ErrorToast from "@/components/toasts/error";
 
 const EditProfile = () => {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -47,7 +55,6 @@ const EditProfile = () => {
     layout_style: "",
     color: "",
   });
-
   const [skills, setSkills] = useState([]);
   const [industries, setIndustries] = useState([]);
   const [educationLevels, setEducationLevels] = useState([]);
@@ -62,6 +69,12 @@ const EditProfile = () => {
   const [showRecorder, setShowRecorder] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoSource, setVideoSource] = useState(null);
+  const [videoError, setVideoError] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [openUploadStatus, setOpenUploadStatus] = useState(false);
+  const videoBtnFocus = useRef();
+  const [videoStatus, setVideoStatus] = useState(true);
+  const [videoStatusLoading, setVideoStatusLoading] = useState(false);
 
   const handleStartRecording = () => {
     setShowRecorder(true);
@@ -93,7 +106,34 @@ const EditProfile = () => {
     return data.filter(item => item.status === 1);
   };
 
+  const eventEmitter = () => {
+
+  }
+
   useEffect(() => {
+    const socket = io(API_BASE_URL, {
+      query: { userId: user.id }, // Pass the userId as a query parameter
+    });
+
+    socket.on('video-status-update', (data) => {
+      setOpenUploadStatus(true);
+      console.log('Received update:', data.percentage);
+      setPercentage(data.percentage)
+      if (data.percentage == 100 && data.error == null) {
+        const page = searchParams.get("p");
+        SuccessToast("Update profile successful!");
+        setVideoSource(null)
+        setOpenUploadStatus(false);
+        if (page) {
+          setLoading(false);
+          navigate('/jobseeker/dashboard');
+        }
+      } else {
+        setVideoStatusLoading(false);
+        setVideoStatus(false);
+      }
+    });
+
     const fetchData = async () => {
       try {
         const [
@@ -128,7 +168,6 @@ const EditProfile = () => {
         const profile = seeker.JobSeeker;
         const visibilitySetting = seeker.VisibilitySetting;
 
-
         setFormData({
           fullName: seeker?.name || "",
           email: seeker?.email || "",
@@ -144,7 +183,7 @@ const EditProfile = () => {
           skillLevel: profile?.skillLevel || "",
           skills: seeker?.JobseekerSkills.reduce((acc, skillItem) => {
             const { name, id } = skillItem.Skill;
-            acc[name] = { id, name };
+            acc[id] = { id, name };
             return acc;
           }, {}),
           aboutYourself: profile?.about || "",
@@ -167,6 +206,11 @@ const EditProfile = () => {
     };
     fetchProfile();
     fetchData();
+    eventEmitter()
+    // Cleanup connection when component unmounts
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   // Optimized handleChange function
@@ -185,19 +229,19 @@ const EditProfile = () => {
           }
           // return { ...prev, [name]: files[0] };
         } else if (name.startsWith("skills.")) {
-          const skillName = name.split(".")[1];
-          const skill = skills.find((s) => s.name === skillName);
+          const skillId = e.target.getAttribute("data-id");
+          const skill = skills.find((s) => s.id == skillId);
 
           if (checked) {
             return {
               ...prev,
               skills: {
                 ...prev.skills,
-                [skillName]: { id: skill.id, name: skill.name },
+                [skillId]: { id: skill.id, name: skill.name },
               },
             };
           } else {
-            const { [skillName]: _, ...restSkills } = prev.skills; // Remove unchecked skill
+            const { [skillId]: _, ...restSkills } = prev.skills; // Remove unchecked skill
             return { ...prev, skills: restSkills };
           }
         } else {
@@ -238,6 +282,7 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -263,47 +308,28 @@ const EditProfile = () => {
 
     if (formData.video) {
       profileData.append("video", formData.video);
+    } else {
+      setVideoError(true);
+      videoBtnFocus.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
     }
 
     try {
       setError(null);
       setLoading(true);
-
       const prof = await updateSeekerProfile(profileData);
-      const api = axios.create({
-        baseURL: API_BASE_URL + "/api",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-
-      await api.put(`users/seekerprofile`, profileData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const { loaded, total } = progressEvent;
-          percent = Math.floor((loaded * 100) / total);
-          console.log("options");
-          console.log(percent);
-          if (percent < 100) {
-            console.log(percent);
-            setPercentage(percent)
-          }
-        }
-      });
-
-      setPercentage(0)
       const page = searchParams.get("p");
       const me = await getProfileMs();
-      alert("Update profile successful!");
-      if (prof && me.data && page) {
+      if (!videoSource) {
+        SuccessToast("Update profile successful!");
+      }
+      if (!videoSource && prof && me.data && page) {
+        setLoading(false);
         navigate('/jobseeker/dashboard');
       }
     } catch (err) {
       console.log(err)
-      setError(
+      ErrorToast(
         err.response?.data?.message ||
         "Profile update failed. Please try again."
       );
@@ -322,10 +348,17 @@ const EditProfile = () => {
       ? URL.createObjectURL(formData.video)
       : formData.video ? getImageUrl(formData.video) : '';
 
+
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 min-h-screen">
       <form onSubmit={handleSubmit}>
         <div className="bg-white rounded-lg shadow-md p-6 max-w-5xl mx-auto">
+          <div className="mb-2">
+            {!videoSource && (
+              <Button type="button" className="bg-blue-500 hover:bg-blue-700" onClick={() => navigate('/jobseeker/dashboard')}>Back</Button>
+            )}
+          </div>
           <div className="col-span-2 flex justify-between items-center mb-4">
             <h1 className="text-2xl font-semibold">Update Profile</h1>
             <div className="flex gap-6">
@@ -395,7 +428,7 @@ const EditProfile = () => {
               </div>
               <div className="">
 
-              {/* {videoSource && (
+                {/* {videoSource && (
                   <div>
                     {typeof videoSource === 'string' ? (
                       <video src={videoSource} controls width="320" height="240" />
@@ -422,13 +455,19 @@ const EditProfile = () => {
                   </div>
                 )}
 
-                {showRecorder && (
-                  <div className="mt-4">
-                    <VideoRecorder onStopRecording={handleStopRecording} onCancelRecording={handleCancelRecording} />
-                  </div>
-                )} 
-
                 {!showRecorder && (
+                  <div className="mt-4" ref={videoBtnFocus}>
+                    <VideoRecorder open={open} setOpen={setOpen} onStopRecording={handleStopRecording} onCancelRecording={handleCancelRecording} />
+                  </div>
+                )}
+
+                {
+                  videoError && (
+                    <div className="text-red-500 text-sm mt-2">Please upload a video</div>
+                  )
+                }
+
+                {/* {!showRecorder && (
                   <div className="flex items-center space-x-4 mt-4">
                     <button
                       className="bg-red-500 text-white px-4 py-2 rounded-md"
@@ -436,7 +475,7 @@ const EditProfile = () => {
                     >
                       Record Video
                     </button>
-                    <button
+                    {/* <button
                       className="bg-blue-500 text-white px-4 py-2 rounded-md"
                       type="button"
                       onClick={handleButtonClickVideo}
@@ -450,9 +489,9 @@ const EditProfile = () => {
                         name="video"
                         ref={videoInputRef}
                       />
-                    </button>
+                    </button> 
                   </div>
-                )}
+                )} */}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 col-span-2">
@@ -638,7 +677,8 @@ const EditProfile = () => {
                     <label key={skill.id} className="flex items-center">
                       <input
                         name={`skills.${skill.name}`}
-                        checked={formData.skills[skill.name] || false}
+                        data-id={skill.id}
+                        checked={formData.skills[skill.id] || false}
                         onChange={handleChange}
                         type="checkbox"
                         className="mr-2"
@@ -758,14 +798,16 @@ const EditProfile = () => {
               </div>
             </div>
           </div>
+          <StatusModal isOpen={openUploadStatus}  percentage={percentage} />
           <div className="flex space-x-4 mt-6">
             <button
               className="px-4 py-2 bg-blue-500 text-white rounded-md"
               type="submit"
             >
-              Save Changes
+              {loading ? <PulseLoader size={8} color="#ffffff" /> : "Save Changes"}
             </button>
-            <button className="px-4 py-2 border rounded-md" type="button">
+
+            <button className="px-10 py-2 border rounded-md bg-gray-200" type="button">
               Cancel
             </button>
           </div>
@@ -776,3 +818,22 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
+
+const StatusModal = ({ isOpen, percentage }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div className="mt-3 text-center">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-6">
+            Upload status
+          </h3>
+          <Progress value={percentage} />
+          <p>{percentage}%</p>
+          <p className="text-sm mt-4">Upload in progress please be patient...</p>
+        </div>
+      </div>
+    </div>
+  )
+}

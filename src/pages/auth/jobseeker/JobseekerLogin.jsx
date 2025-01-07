@@ -13,6 +13,7 @@ const JobseekerLogin = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [credentials, setCredentials] = useState({
     email: "",
@@ -25,21 +26,61 @@ const JobseekerLogin = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
+
+    if (error[name]) {
+      setError(prev => {
+        const newErrors = {...prev};
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleBlur = (e) => {
+    const input = e.target;
+    if (!input.validity.valid) {
+      setErrors(prev => ({
+        ...prev,
+        [input.name]: input.validationMessage
+      }));
+    } else {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[input.name];
+        return newErrors;
+      });
+    }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    const form = e.target;
+    
+    // Check all inputs for validity
+    const inputs = Array.from(form.elements);
+    const newErrors = {};
+    inputs.forEach(input => {
+      if (input instanceof HTMLInputElement) {
+        if (!input.validity.valid) {
+          newErrors[input.name] = input.validationMessage;
+        }
+      }
+    });
+    
+    setErrors(newErrors);
+
+    if (!form.checkValidity()) {
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const data = await login(credentials);
       navigate("/jobseeker/dashboard");
     } catch (err) {
-      const error = err.response.data.message;
-      if (error?.needsPasswordSetup) {
-        navigate(`/jobseeker/set-password/${error.user.id}`);
-        ErrorToast("Please set your password to login.");
-
-      }
-      setLoading(false)
+      ErrorToast(err.response?.data?.message?.message ?? "An error occurred during login.")
+      setLoading(false);
     }
   };
 
@@ -53,7 +94,7 @@ const JobseekerLogin = () => {
 
   return (
     <div>
-            <HeaderNav />
+      <HeaderNav />
 
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-0">
         <div className="w-full max-w-md p-8 mb-6 space-y-8 bg-white rounded-lg shadow-md mt-6">
@@ -72,7 +113,7 @@ const JobseekerLogin = () => {
             <span className="px-3 text-sm text-gray-500">Or continue with</span>
             <span className="w-1/5 border-b"></span>
           </div>
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} noValidate className="space-y-6">
             <div>
               <label
                 htmlFor="email"
@@ -86,10 +127,16 @@ const JobseekerLogin = () => {
                 name="email"
                 value={credentials.email}
                 onChange={handleInputChange}
+                onBlur={handleBlur}
                 placeholder="you@example.com"
-                className="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                className={`w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200 ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
                 required
               />
+               {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
             <div>
               <label
@@ -106,7 +153,9 @@ const JobseekerLogin = () => {
                   value={credentials.password}
                   onChange={handleInputChange}
                   placeholder="••••••••"
-                  className="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                  className={`w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200 ${
+                    errors.password ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   required
                 />
                 <button
@@ -121,6 +170,9 @@ const JobseekerLogin = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -149,10 +201,9 @@ const JobseekerLogin = () => {
             <button
               type="submit"
               className="w-full py-2 mt-4 text-white bg-[#4a90e2] rounded hover:bg-[#4a90e2]"
-              onClick={() => setLoading(true)}
             >
-            {loading ? <PulseLoader size={8} color="#ffffff" /> : "Sign in"}
-              
+              {loading ? <PulseLoader size={8} color="#ffffff" /> : "Sign in"}
+
             </button>
           </form>
           <p className="mt-4 text-sm text-center text-gray-600">

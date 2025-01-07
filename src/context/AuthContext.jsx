@@ -25,6 +25,9 @@ export const AuthProvider = ({ children }) => {
     const validateToken = async () => {
       try {
         const userData = await getCurrentUser();
+        console.log("userData=====");
+        console.log(userData);
+        
         if (userData.data.user) {
           setUser(userData.data.user);
         }
@@ -36,6 +39,22 @@ export const AuthProvider = ({ children }) => {
     };
     validateToken();
   }, []);
+
+  const refresh = async () => {
+    try {
+      const userData = await getCurrentUser();
+      console.log("userData=====");
+      console.log(userData);
+      
+      if (userData.data.user) {
+        setUser(userData.data.user);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = async (userData) => {
     try {
@@ -89,6 +108,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     loading,
     linkedInLogin,
+    refresh
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

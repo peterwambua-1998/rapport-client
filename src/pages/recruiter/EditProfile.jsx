@@ -42,7 +42,7 @@ const EditProfile = () => {
         coverPhoto: response?.data.cover_photo || null,
         profilePhoto: response?.data.avatar || null,
         company: company || null,
-        specialization: profile?.specialization || null,
+        specialization: profile?.specialization || "",
       });
       if (response?.data.avatar) {
         updatePhoto(getImageUrl(response?.data.avatar))
@@ -115,6 +115,36 @@ const EditProfile = () => {
       </div>
     )
   }
+
+  const handlePaste = (e) => {
+    // Prevent the default paste behavior
+    e.preventDefault();
+    
+    // Get pasted content as plain text
+    const text = e.clipboardData.getData('text/plain');
+    
+    // Clean the text: replace multiple spaces with single space
+    // and remove extra line breaks
+    const cleanedText = text
+      .replace(/\s+/g, ' ')  // Replace multiple whitespace with single space
+      .replace(/\n+/g, ' '); // Replace line breaks with space
+    console.log(cleanedText);
+    // Get cursor position
+    const cursorPos = e.target.selectionStart;
+    
+    // Insert cleaned text at cursor position
+    const value = e.target.value;
+    const newValue = 
+      value.substring(0, cursorPos) + 
+      cleanedText + 
+      value.substring(e.target.selectionEnd);
+      
+    // Update the textarea value
+    // If using controlled input:
+    // Or for uncontrolled:
+    e.target.value = newValue;
+    handleChange(e)
+  };
 
   const coverPhotoPreview =
     formData.coverPhoto instanceof File
@@ -253,6 +283,7 @@ const EditProfile = () => {
             About Yourself
           </label>
           <textarea
+            onPaste={handlePaste}
             name="aboutYourself"
             value={formData.aboutYourself}
             onChange={handleChange}

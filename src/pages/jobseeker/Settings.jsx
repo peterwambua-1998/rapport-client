@@ -11,7 +11,7 @@ const ProjectSettings = () => {
         return <Profile />;
       case "password":
         return <Password />;
-      case "social":
+      case "LinkedIn":
         return <SocialProfile />; 
       default:
         return <profile />;

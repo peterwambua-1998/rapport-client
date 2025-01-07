@@ -11,6 +11,7 @@ import HelpCenter from "../components/common/Help/HelpCenter";
 import InterviewPrep from "../pages/jobseeker/InterviewPrep";
 import Questions from "../pages/jobseeker/Questions";
 import EditProfile from "@/pages/jobseeker/EditProfile";
+import VerifyEmail from "@/pages/auth/jobseeker/JobSeekerVerifyEmail";
 
 const jobseekerRoutes = [
   { path: "/jobseeker/dashboard", element: <Dashboard /> },
@@ -23,7 +24,6 @@ const jobseekerRoutes = [
   { path: "/jobseeker/notifications", element: <Notifications /> },
   { path: "/jobseeker/settings", element: <Settings /> },
   { path: "/jobseeker/profile", element: <EditProfile /> },
-  { path: "/jobseeker/help-center", element: <HelpCenter /> },
   { path: "/jobseeker/help-center", element: <HelpCenter /> },
 ];
 
