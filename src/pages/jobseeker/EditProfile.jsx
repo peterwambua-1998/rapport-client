@@ -53,7 +53,7 @@ const EditProfile = () => {
     video_introduction: false,
     basic_information: false,
     layout_style: "",
-    color: "",
+    color: "#205295",
   });
   const [skills, setSkills] = useState([]);
   const [industries, setIndustries] = useState([]);
@@ -198,7 +198,7 @@ const EditProfile = () => {
           video_introduction: visibilitySetting?.videoIntro || false,
           basic_information: visibilitySetting?.basicInfo || false,
           layout_style: profile?.layoutStyle || "",
-          color: profile?.backgroundColor || "",
+          color: profile?.backgroundColor || "#205295",
         });
       } catch (error) {
         setMessage({ type: "error", text: "Failed to load profile." });
