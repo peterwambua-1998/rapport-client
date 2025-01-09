@@ -11,7 +11,7 @@ import {
 } from "@/services/api/api";
 import { getImageUrl } from "@/services/helpers/helpers";
 import { IoPersonSharp } from "react-icons/io5";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaSignOutAlt } from "react-icons/fa";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import VideoRecorder from "@/pages/jobseeker/VideoRecording";
 import axios from "axios";
@@ -24,7 +24,7 @@ import { useAuth } from "@/context/AuthContext";
 import ErrorToast from "@/components/toasts/error";
 
 const EditProfile = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -354,10 +354,18 @@ const EditProfile = () => {
     <div className="p-6 bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 min-h-screen">
       <form onSubmit={handleSubmit}>
         <div className="bg-white rounded-lg shadow-md p-6 max-w-5xl mx-auto">
-          <div className="mb-2">
+          <div className="mb-2 flex justify-between items-center">
             {!videoSource && (
               <Button type="button" className="bg-blue-500 hover:bg-blue-700" onClick={() => navigate('/jobseeker/dashboard')}>Back</Button>
             )}
+
+            <button
+              onClick={() => logout()}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2"
+            >
+              <FaSignOutAlt />
+              Sign out
+            </button>
           </div>
           <div className="col-span-2 flex justify-between items-center mb-4">
             <h1 className="text-2xl font-semibold">Update Profile</h1>
@@ -798,7 +806,7 @@ const EditProfile = () => {
               </div>
             </div>
           </div>
-          <StatusModal isOpen={openUploadStatus}  percentage={percentage} />
+          <StatusModal isOpen={openUploadStatus} percentage={percentage} />
           <div className="flex space-x-4 mt-6">
             <button
               className="px-4 py-2 bg-blue-500 text-white rounded-md"
