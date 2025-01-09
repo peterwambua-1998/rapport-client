@@ -227,7 +227,7 @@ const MainComponent = ({ videos = [], jobs = [], industries = [], educationLevel
 
         <div className="relative mb-8">
           <div className="overflow-x-auto pb-4">
-            <div className="flex gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredVideos.map((video) => (
                 <div
                   key={video.id}
