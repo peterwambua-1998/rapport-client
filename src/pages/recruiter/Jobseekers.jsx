@@ -227,7 +227,7 @@ const MainComponent = ({ videos = [], jobs = [], industries = [], educationLevel
 
         <div className="relative mb-8">
           <div className="overflow-x-auto pb-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
               {filteredVideos.map((video) => (
                 <div
                   key={video.id}
@@ -235,7 +235,7 @@ const MainComponent = ({ videos = [], jobs = [], industries = [], educationLevel
                   onDragStart={(e) => {
                     e.dataTransfer.setData("video", JSON.stringify(video));
                   }}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden min-w-[320px] cursor-move hover:shadow-xl transition-shadow"
+                  className="bg-white rounded-xl shadow-lg overflow-hidden w-full cursor-move hover:shadow-xl transition-shadow"
                 >
                   <div className="relative">
                     <div className="aspect-video bg-[#e9ecef]">
