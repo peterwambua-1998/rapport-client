@@ -132,7 +132,7 @@ const HeaderNav = () => {
       : jobseekerNavItems;
 
   return (
-    <div className="relative z-10 flex-shrink-0 flex h-16 items-center bg-[#C1E1C4] shadow">
+    <div className="relative z-10 flex-shrink-0 flex h-16 items-center bg-[#c3dac4] shadow">
       <div className="flex items-center justify-between px-4 w-full">
         <div className="flex gap-4 items-center w-full">
           {/* Logo */}

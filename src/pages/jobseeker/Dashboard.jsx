@@ -307,26 +307,27 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center border border-slate-300 px-4 py-2 rounded bg-[#D8F7DA]">
-                      <div className="flex items-center space-x-2">
-                        <Users className="w-5 h-5 text-gray-500" />
-                        <span>Profile Views</span>
-                      </div>
-                      <span className="text-lg font-semibold">{profileData.profileViews}</span>
+                    <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
+                      <p><span className="text-lg font-semibold">{profileData.profileViews} </span> Profile Views</p>
                     </div>
-                    <div className="flex justify-between items-center border border-slate-300 px-4 py-2 rounded bg-[#D8F7DA]">
-                      <div className="flex items-center space-x-2">
-                        <Search className="w-5 h-5 text-gray-500" />
-                        <span>Search Appearance</span>
-                      </div>
-                      <span className="text-lg font-semibold">{profileData.searchAppearance}</span>
+                    <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
+                      <p><span className="text-lg font-semibold">8 </span> Search Appearance</p>
+                    </div>
+                    <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
+                      <p><span className="text-lg font-semibold">5 </span> Interviews Completed</p>
+                    </div>
+                    <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
+                      <p><span className="text-lg font-semibold">7 </span> Challenges Completed</p>
+                    </div>
+                    <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
+                      <p><span className="text-lg font-semibold">62 </span> Days On The Platform</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
               <div className='col-span-4'>
                 <div>
-                  <div className="relative h-64 rounded-t-lg bg-gray-200" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")` }}>
+                  <div className="relative h-[57vh] rounded-t-lg bg-gray-200" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")` }}>
                     <Dialog>
                       <DialogTrigger>
                         <CirclePlay className="absolute inset-0 m-auto w-16 h-16 text-[#F1F6FF]" />
@@ -362,7 +363,7 @@ const Dashboard = () => {
 
 
             {/* About Section */}
-            <Card className="bg-[#D8F7DA] border border-slate-300">
+            <Card className="bg-[#c3dac4] border border-slate-300">
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">About Me</h2>
                 <p className="text-gray-700">
@@ -373,7 +374,7 @@ const Dashboard = () => {
 
             {/* AI Summary and Professional Info Grid */}
             <div className="grid grid-cols-2 gap-6">
-              <Card className="bg-[#D8F7DA] border border-slate-300">
+              <Card className="bg-[#c3dac4] border border-slate-300">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">AI Summary</h2>
                   <div className="space-y-4">
@@ -404,7 +405,7 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#D8F7DA] border border-slate-300">
+              <Card className="bg-[#c3dac4] border border-slate-300">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">Professional Info</h2>
                   <div className="space-y-4">
@@ -446,7 +447,7 @@ const Dashboard = () => {
             </div>
 
             {/* Skills Section */}
-            <Tabs defaultValue="technical" className=" w-full bg-[#D8F7DA] border border-slate-300 p-6 rounded-lg">
+            <Tabs defaultValue="technical" className=" w-full bg-[#c3dac4] border border-slate-300 p-6 rounded-lg">
               <TabsList>
                 <TabsTrigger value="technical"   >Technical Skills</TabsTrigger>
                 <TabsTrigger value="soft">Soft Skills</TabsTrigger>
@@ -470,7 +471,7 @@ const Dashboard = () => {
             </Tabs>
 
             {/* Career Goals */}
-            <Card className="bg-[#D8F7DA] border border-slate-300">
+            <Card className="bg-[#c3dac4] border border-slate-300">
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">Career Goals</h2>
                 <div className="space-y-3">
@@ -485,7 +486,7 @@ const Dashboard = () => {
             </Card>
 
             {/* LinkedIn Profile */}
-            <Card className="bg-[#D8F7DA] border border-slate-300">
+            <Card className="bg-[#c3dac4] border border-slate-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-1 mb-6">
                   <h2 className="text-lg font-semibold text-[#2b4033]">LinkedIn Profile</h2>
@@ -565,7 +566,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Video Testimonials */}
-            <Card className="bg-[#D8F7DA] border border-slate-300">
+            <Card className="bg-[#c3dac4] border border-slate-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-[#2b4033]">Video Testimonials</h2>
@@ -618,7 +619,7 @@ const Dashboard = () => {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Profile Card */}
-            <Card className="bg-[#D8F7DA] border border-slate-500">
+            <Card className="bg-[#c3dac4] border border-slate-500">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center">
                   <img src={getImageUrl(profileData.avatar)} alt="Profile" className="rounded-lg mb-4" />
@@ -658,7 +659,7 @@ const Dashboard = () => {
                 <div className="space-y-4">
                   {profileData.upComingInterviews.map((interview, index) => (
                     // <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
-                    <div key={index} className="border px-2 py-2 rounded bg-[#D8F7DA]">
+                    <div key={index} className="border px-2 py-2 rounded bg-[#c3dac4]">
                       <h3 className="font-medium">{interview.position}</h3>
                       <p className="text-sm text-gray-600">{interview.company}</p>
                       <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500">
