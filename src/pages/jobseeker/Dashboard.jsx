@@ -23,7 +23,7 @@ import { formatDateTime, getImageUrl } from '@/services/helpers/helpers';
 import videoImg from '@/assets/office-background-image.jpg'
 import { IoIosRocket, IoLogoLinkedin } from 'react-icons/io';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FaAward } from 'react-icons/fa';
+import { FaAward, FaLightbulb } from 'react-icons/fa';
 import { FaVideo } from 'react-icons/fa6';
 import {
   Dialog,
@@ -395,7 +395,7 @@ const Dashboard = () => {
                       <div className="space-y-2">
                         {profileData.aiRecommendations.map((recommendation, index) => (
                           <div className="flex items-start space-x-2" key={index}>
-                            <Lightbulb fill="#facc15" size={20} className='text-yellow-400 mt-1' />
+                            <FaLightbulb className='text-yellow-500 mt-1 w-5 h-4' />
                             <span className='text-gray-700'>{recommendation}</span>
                           </div>
                         ))}
