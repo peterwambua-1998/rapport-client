@@ -36,6 +36,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import logo from '@/assets/images/rapport-logo.png'
+import { IoChatbubblesSharp } from "react-icons/io5";
 
 const HeaderItem = ({ to, Icon, label, isMobile = false }) => {
   const location = useLocation();
@@ -97,7 +98,7 @@ const HeaderNav = () => {
     { to: "/jobseeker/dashboard", icon: FaHome, label: "Home" },
     { to: "/jobseeker/interview-prep", icon: FaLightbulb, label: "Interviews" },
     { to: "/jobseeker/job-matches", icon: FaHandshake, label: "Challenges" },
-    { to: "/jobseeker/messages", icon: FaEnvelope, label: "Messaging" },
+    { to: "/jobseeker/messages", icon: IoChatbubblesSharp, label: "Messaging" },
     { to: "/jobseeker/notifications", icon: FaBell, label: "Notifications" },
   ];
 
