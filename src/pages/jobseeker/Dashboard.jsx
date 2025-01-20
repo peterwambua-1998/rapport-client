@@ -11,7 +11,8 @@ import {
   CirclePlay,
   Lightbulb,
   BadgeCheck,
-  CirclePlus
+  CirclePlus,
+  ArrowRight
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import profileImage from "@/assets/profile.png";
@@ -32,7 +33,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import interviewOne from "@/assets/interview-1.webp"
+import interviewOne from "@/assets/video-1.jpg"
+import interviewTwo from "@/assets/video-2.jpg"
+import interviewThree from "@/assets/video-3.jpg"
 
 
 
@@ -155,7 +158,7 @@ const Dashboard = () => {
         company: "Tech Innovations Inc",
         duration: "1:45",
         recordedDate: "2024-02-10",
-        thumbnail: "/testimonial-2.jpg",
+        thumbnail: interviewTwo,
         videoUrl: "/testimonial-2.mp4",
         status: "Approved",
       },
@@ -166,7 +169,7 @@ const Dashboard = () => {
         company: "Digital Ventures",
         duration: "2:30",
         recordedDate: "2024-02-01",
-        thumbnail: "/testimonial-3.jpg",
+        thumbnail: interviewThree,
         videoUrl: "/testimonial-3.mp4",
         status: "Pending",
       },
@@ -262,23 +265,23 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#edeeed]">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
 
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-3 gap-6">
+      <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className="grid grid-cols-4 gap-6">
           {/* Left Column */}
-          <div className="col-span-2 space-y-6">
+          <div className="col-span-3 space-y-6">
             {/* Profile Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4 mb-4">
               <h1 className="text-2xl font-bold text-[#2b4033]">Profile</h1>
               <div className="flex space-x-2">
                 <Badge
                   variant="secondary"
                   className={`${profileData.isActive
-                    ? "bg-green-100 text-green-800"
+                    ? "bg-[#22C55E] text-white border border-[#166534]"
                     : "bg-red-100 text-red-800"
                     }`}
                 >
@@ -287,8 +290,8 @@ const Dashboard = () => {
                 <Badge
                   variant="secondary"
                   className={`${profileData.isPublic
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-gray-100 text-gray-800"
+                    ? "bg-[#E0E2E5] text-black border border-[#606062]"
+                    : "bg-gray-100 text-gray-800 border border-[#606062]"
                     }`}
                 >
                   {profileData.isPublic ? "Public" : "Private"}
@@ -297,43 +300,69 @@ const Dashboard = () => {
             </div>
 
             {/* Video Section */}
-            <Card>
-              <CardContent className="p-0">
-                <div className="relative h-64 rounded-t-lg bg-gray-200" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")` }}>
-                  <Dialog>
-                    <DialogTrigger>
-                      <CirclePlay className="absolute inset-0 m-auto w-16 h-16 text-[#F1F6FF]" />
-                    </DialogTrigger>
-                    <DialogContent className="max-w-[80vw] md:max-w-[70vw] lg:max-w-[70vw]">
-                      <DialogHeader>
-                        <DialogTitle className="text-[#2b4033]">Video</DialogTitle>
-                        <div>
-                          <video
-                            className="w-full h-full object-cover"
-                            controls
-                            src={profileData.videoUrl}
-                          />
-                        </div>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                <div className="p-4 bg-black/50 rounded-b-lg">
-                  <div className="flex items-center justify-between text-sm text-white">
-                    <span>Uploaded: {profileData.videoUploadDate}</span>
-                    <span>Last viewed: {profileData.videoLastViewed}</span>
+            <div className="p-0 grid grid-cols-6 gap-6">
+              <Card className="border border-slate-500 col-span-2">
+                <CardHeader>
+                  <h2 className="text-lg font-semibold text-[#2b4033]">Platform Activity</h2>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center border border-slate-300 px-4 py-2 rounded bg-[#D8F7DA]">
+                      <div className="flex items-center space-x-2">
+                        <Users className="w-5 h-5 text-gray-500" />
+                        <span>Profile Views</span>
+                      </div>
+                      <span className="text-lg font-semibold">{profileData.profileViews}</span>
+                    </div>
+                    <div className="flex justify-between items-center border border-slate-300 px-4 py-2 rounded bg-[#D8F7DA]">
+                      <div className="flex items-center space-x-2">
+                        <Search className="w-5 h-5 text-gray-500" />
+                        <span>Search Appearance</span>
+                      </div>
+                      <span className="text-lg font-semibold">{profileData.searchAppearance}</span>
+                    </div>
                   </div>
-                  <div className="mt-2">
-                    <span className="text-[#EAB308] text-sm flex items-center">
-                      ⚠️ Consider updating your video to keep your profile current
-                    </span>
+                </CardContent>
+              </Card>
+              <div className='col-span-4'>
+                <div>
+                  <div className="relative h-64 rounded-t-lg bg-gray-200" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")` }}>
+                    <Dialog>
+                      <DialogTrigger>
+                        <CirclePlay className="absolute inset-0 m-auto w-16 h-16 text-[#F1F6FF]" />
+                      </DialogTrigger>
+                      <DialogContent className="max-w-[80vw] md:max-w-[70vw] lg:max-w-[70vw]">
+                        <DialogHeader>
+                          <DialogTitle className="text-[#2b4033]">Video</DialogTitle>
+                          <div>
+                            <video
+                              className="w-full h-full object-cover"
+                              controls
+                              src={profileData.videoUrl}
+                            />
+                          </div>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                  <div className="p-4 bg-black/50 rounded-b-lg">
+                    <div className="flex items-center justify-between text-sm text-white">
+                      <span>Uploaded: {profileData.videoUploadDate}</span>
+                      <span>Last viewed: {profileData.videoLastViewed}</span>
+                    </div>
+                    <div className="mt-2">
+                      <span className="text-[#EAB308] text-sm flex items-center">
+                        ⚠️ Consider updating your video to keep your profile current
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
 
             {/* About Section */}
-            <Card className="bg-[#c3dac4] border border-slate-300">
+            <Card className="bg-[#D8F7DA] border border-slate-300">
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">About Me</h2>
                 <p className="text-gray-700">
@@ -344,7 +373,7 @@ const Dashboard = () => {
 
             {/* AI Summary and Professional Info Grid */}
             <div className="grid grid-cols-2 gap-6">
-              <Card className="bg-[#c3dac4] border border-slate-300">
+              <Card className="bg-[#D8F7DA] border border-slate-300">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">AI Summary</h2>
                   <div className="space-y-4">
@@ -375,7 +404,7 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#c3dac4] border border-slate-300">
+              <Card className="bg-[#D8F7DA] border border-slate-300">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">Professional Info</h2>
                   <div className="space-y-4">
@@ -417,7 +446,7 @@ const Dashboard = () => {
             </div>
 
             {/* Skills Section */}
-            <Tabs defaultValue="technical" className=" w-full bg-[#c3dac4] border border-slate-300 p-6 rounded-lg">
+            <Tabs defaultValue="technical" className=" w-full bg-[#D8F7DA] border border-slate-300 p-6 rounded-lg">
               <TabsList>
                 <TabsTrigger value="technical"   >Technical Skills</TabsTrigger>
                 <TabsTrigger value="soft">Soft Skills</TabsTrigger>
@@ -441,7 +470,7 @@ const Dashboard = () => {
             </Tabs>
 
             {/* Career Goals */}
-            <Card className="bg-[#c3dac4] border border-slate-300">
+            <Card className="bg-[#D8F7DA] border border-slate-300">
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">Career Goals</h2>
                 <div className="space-y-3">
@@ -456,7 +485,7 @@ const Dashboard = () => {
             </Card>
 
             {/* LinkedIn Profile */}
-            <Card className="bg-[#c3dac4] border border-slate-300">
+            <Card className="bg-[#D8F7DA] border border-slate-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-1 mb-6">
                   <h2 className="text-lg font-semibold text-[#2b4033]">LinkedIn Profile</h2>
@@ -536,7 +565,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Video Testimonials */}
-            <Card className="bg-[#c3dac4] border border-slate-300">
+            <Card className="bg-[#D8F7DA] border border-slate-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-[#2b4033]">Video Testimonials</h2>
@@ -545,8 +574,25 @@ const Dashboard = () => {
                 <div className="grid grid-cols-3 gap-4">
                   {profileData.videoTestimonials.map((testimonial, index) => (
                     <div key={index} className="space-y-2">
-                      <div className="relative h-40 bg-gray-200 rounded-lg">
+                      <div className="relative h-40 bg-gray-200 rounded-lg" >
                         <img src={testimonial.thumbnail} alt="Testimonial" className="w-full h-full object-cover rounded-lg" />
+                        <Dialog>
+                          <DialogTrigger>
+                            <CirclePlay className="absolute inset-0 m-auto w-16 h-16 text-[#F1F6FF]" />
+                          </DialogTrigger>
+                          <DialogContent className="max-w-[80vw] md:max-w-[70vw] lg:max-w-[70vw]">
+                            <DialogHeader>
+                              <DialogTitle className="text-[#2b4033]">Video</DialogTitle>
+                              <div>
+                                <video
+                                  className="w-full h-full object-cover"
+                                  controls
+                                  src={testimonial.videoUrl}
+                                />
+                              </div>
+                            </DialogHeader>
+                          </DialogContent>
+                        </Dialog>
                         <div
                           className={`absolute top-2 right-2 px-2 py-1 text-xs rounded ${testimonial.status === "Approved"
                             ? "bg-green-500"
@@ -572,7 +618,7 @@ const Dashboard = () => {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Profile Card */}
-            <Card className="bg-white border border-slate-300">
+            <Card className="bg-[#D8F7DA] border border-slate-500">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center">
                   <img src={getImageUrl(profileData.avatar)} alt="Profile" className="rounded-lg mb-4" />
@@ -585,7 +631,7 @@ const Dashboard = () => {
                   )}
                   <div className="w-full mt-6 space-y-3">
                     <Button onClick={() => navigate('/jobseeker/settings')} className=" bg-[#dce2d4] hover:bg-[#c2c8bb] text-black w-full flex items-center justify-center">
-                      <Edit  className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                       Edit profile
                     </Button>
                     <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
@@ -600,40 +646,19 @@ const Dashboard = () => {
             </Card>
 
             {/* Platform Activity */}
-            <Card className="border border-slate-300">
-              <CardHeader>
-                <h2 className="text-lg font-semibold text-[#2b4033]">Platform Activity</h2>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-5 h-5 text-gray-500" />
-                      <span>Profile Views</span>
-                    </div>
-                    <span className="text-lg font-semibold">{profileData.profileViews}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                      <Search className="w-5 h-5 text-gray-500" />
-                      <span>Search Appearance</span>
-                    </div>
-                    <span className="text-lg font-semibold">{profileData.searchAppearance}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+
 
             {/* Upcoming Interviews */}
-            <Card className="border border-slate-300">
+            <Card className="border border-slate-500">
               <CardHeader className="flex flex-row items-center justify-between">
                 <h2 className="text-lg font-semibold text-[#2b4033]">Upcoming Interviews</h2>
-                <Button variant="link" className="text-sm text-[#2b4033]">View all</Button>
+                <Button variant="link" className="text-sm text-[#2b4033]"><ArrowRight /> View all</Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {profileData.upComingInterviews.map((interview, index) => (
-                    <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
+                    // <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
+                    <div key={index} className="border px-2 py-2 rounded bg-[#D8F7DA]">
                       <h3 className="font-medium">{interview.position}</h3>
                       <p className="text-sm text-gray-600">{interview.company}</p>
                       <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500">
