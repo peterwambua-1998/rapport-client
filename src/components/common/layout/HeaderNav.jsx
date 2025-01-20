@@ -43,10 +43,11 @@ const HeaderItem = ({ to, Icon, label, isMobile = false }) => {
   return (
     <NavLink
       to={to}
-      className={`flex items-center gap-2 px-4 py-2 hover:text-blue-700 ${location.pathname === to ? 'text-blue-500' : 'text-[#00000099]'
+      className={`flex items-center gap-2 px-4 py-2 hover:text-[#2b4033] ${location.pathname === to ? 'text-[#2b4033]' : 'text-[#949894]'
         } ${isMobile ? 'w-full' : 'flex-col'
         }`}
     >
+      <Icon />
       <span className={`${isMobile ? 'text-base' : 'text-sm'}`}>{label}</span>
     </NavLink>
   );
@@ -93,12 +94,11 @@ const HeaderNav = () => {
   const isRecruiter = user?.role === "recruiter";
 
   const jobseekerNavItems = [
-    { to: "/jobseeker/dashboard", icon: FaHome, label: "Dashboard" },
-    { to: "/jobseeker/interview-prep", icon: FaLightbulb, label: "Interview Prep" },
-    { to: "/jobseeker/job-matches", icon: FaHandshake, label: "My Jobs" },
-    { to: "/jobseeker/messages", icon: FaEnvelope, label: "Inbox" },
-    { to: "/jobseeker/schedule", icon: FaCalendarAlt, label: "Schedule" },
-    { to: "/jobseeker/help-center", icon: FaLifeRing, label: "Help Center" },
+    { to: "/jobseeker/dashboard", icon: FaHome, label: "Home" },
+    { to: "/jobseeker/interview-prep", icon: FaLightbulb, label: "Interviews" },
+    { to: "/jobseeker/job-matches", icon: FaHandshake, label: "Challenges" },
+    { to: "/jobseeker/messages", icon: FaEnvelope, label: "Messaging" },
+    { to: "/jobseeker/notifications", icon: FaBell, label: "Notifications" },
   ];
 
   const adminNavItems = [
@@ -134,7 +134,7 @@ const HeaderNav = () => {
   return (
     <div className="relative z-10 flex-shrink-0 flex h-16 items-center bg-white shadow">
       <div className="flex items-center justify-between px-4 w-full">
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center w-full">
           {/* Logo */}
           <div className="h-14 w-auto flex-shrink-0">
             <img
@@ -145,7 +145,7 @@ const HeaderNav = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex flex-1 justify-center">
+          <div className="hidden lg:flex flex-1 justify-center   w-full">
             {navItems.map((item) => (
               <HeaderItem
                 key={item.to}

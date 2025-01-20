@@ -21,17 +21,8 @@ const JobMatches = () => {
     fetchProjects();
   }, []);
   return (
-    <div>
-      <div className="mx-auto bg-white shadow-md rounded-lg overflow-hidden p-4">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-2xl font-semibold">My Jobs History</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-          {projects.map((project) => (
-            <ProjectCard project={project} />
-          ))}
-        </div>
-      </div>
+    <div className="p-4">
+      <p className="text-xl">Coming soon</p>
     </div>
   );
 };

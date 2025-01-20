@@ -162,7 +162,7 @@ const VideoRecorder = ({ onStopRecording, onCancelRecording, open, setOpen }) =>
         setOpen(newOpen);
       }}>
         <DialogTrigger asChild>
-          <Button variant="default" type="button" className="bg-blue-500">
+          <Button variant="default" type="button" className="bg-[#abd2ab] hover:bg-[#88a888] text-black">
             {videoUrl == null ? 'Record Video': 'View Recording'}
           </Button>
         </DialogTrigger>

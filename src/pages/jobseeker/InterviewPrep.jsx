@@ -50,12 +50,12 @@ const InterviewPrep = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 p-8">
+    <div className="min-h-screen bg-[#edeeed] p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-crimson-text text-[#2c3e50] mb-8 text-center">
+        <h1 className="text-3xl font-semibold text-[#2b4033] mb-8 text-center">
           Interview Preparation Guide
         </h1>
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-[#c3dac4] rounded-lg p-6 mb-8 border border-slate-300">
           <h2 className="text-2xl font-crimson-text text-[#34495e] mb-4">
             <FaVideo className="mr-2 inline" />
             Video Interview Tips
@@ -70,7 +70,7 @@ const InterviewPrep = () => {
           </ul>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-[#c3dac4] rounded-lg p-6 mb-8 border border-slate-300">
           <h2 className="text-2xl font-crimson-text text-[#34495e] mb-4">
             <FaInfoCircle className="mr-2 inline" />
             Interview Requirements

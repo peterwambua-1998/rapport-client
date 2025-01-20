@@ -51,7 +51,7 @@ function App() {
         </Route>
 
         {/* JobSeeker Routes with MainLayout */}
-        <Route>
+        <Route element={<MainLayout />}>
           {JobSeekerRoutes.map((route, index) => (
             <Route
               key={index}

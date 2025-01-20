@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Profile from "./EditProfile";
 import Password from "./Password";
-import SocialProfile from "./SocialProfile"; 
+import SocialProfile from "./SocialProfile";
 
 const ProjectSettings = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -12,7 +12,7 @@ const ProjectSettings = () => {
       case "password":
         return <Password />;
       case "LinkedIn":
-        return <SocialProfile />; 
+        return <SocialProfile />;
       default:
         return <profile />;
     }
@@ -20,9 +20,9 @@ const ProjectSettings = () => {
 
   return (
     <div>
-      <div className="mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-2xl font-semibold">Profile Settings</h2>
+      <div className="mx-auto bg-[#c3dac4] shadow-md rounded-lg overflow-hidden">
+        <div className="flex justify-between items-center p-4">
+          <h4 className="text-xl font-semibold">Profile Settings</h4>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3">
           <div className="col-span-full">
@@ -30,8 +30,8 @@ const ProjectSettings = () => {
               <nav className="flex space-x-4">
                 <button
                   className={`py-2 px-4 ${activeTab === "profile"
-                    ? "text-blue-500 border-b-2 border-blue-500"
-                    : "text-gray-600 hover:text-blue-500"
+                    ? "text-[#2b4033] border-b-2 border-[#2b4033]"
+                    : "text-[#59695f] hover:text-[#2b4033] "
                     }`}
                   onClick={() => setActiveTab("profile")}
                 >
@@ -39,8 +39,8 @@ const ProjectSettings = () => {
                 </button>
                 <button
                   className={`py-2 px-4 ${activeTab === "password"
-                    ? "text-blue-500 border-b-2 border-blue-500"
-                    : "text-gray-600 hover:text-blue-500"
+                    ? "text-[#2b4033] border-b-2 border-[#2b4033]"
+                    : "text-[#59695f] hover:text-[#2b4033] "
                     }`}
                   onClick={() => setActiveTab("password")}
                 >
@@ -48,13 +48,14 @@ const ProjectSettings = () => {
                 </button>
                 <button
                   className={`py-2 px-4 ${activeTab === "social"
-                    ? "text-blue-500 border-b-2 border-blue-500"
-                    : "text-gray-600 hover:text-blue-500"
+                    ? "text-[#2b4033] border-b-2 border-[#2b4033]"
+                    : "text-[#59695f] hover:text-[#2b4033] "
                     }`}
+
                   onClick={() => setActiveTab("social")}
                 >
                   Social Media
-                </button> 
+                </button>
               </nav>
             </div>
             <div>{renderTabContent()}</div>

@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -93,3 +93,7 @@
   background: #3b82f6;
 }
 
+
+input[type="checkbox"] {
+  accent-color: #abd2ab
+}
