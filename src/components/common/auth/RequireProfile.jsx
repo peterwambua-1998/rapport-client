@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
-import { getProfileMs } from '@/services/api/api';
+import { getProfileMs, getSeekerProfile } from '@/services/api/api';
 
 const RequireProfile = () => {
   const { user } = useAuth();
@@ -9,9 +9,9 @@ const RequireProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await getProfileMs();
+      const response = await getSeekerProfile();
       if (!response.data) {
-        navigate('/jobseeker/settings?p=1');
+        navigate('/jobseeker/introduction/profile');
       }
     } catch (err) {
       console.log(err)

@@ -1,268 +1,164 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
-import ErrorToast from "@/components/toasts/error";
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+import { Camera, StopCircle, SwitchCamera, Trash, Upload, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { getImageUrl } from '@/services/helpers/helpers';
 
-const VideoRecorder = ({ onStopRecording, onCancelRecording, open, setOpen }) => {
+const VideoRecorder = ({ onStopRecording }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoBlob, setVideoBlob] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [devices, setDevices] = useState([]);
-  const [selectedDevice, setSelectedDevice] = useState(null);
-  const [resolution, setResolution] = useState({ width: 1280, height: 720 });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const MAX_RECORDING_TIME = 120; // 10 minutes = 600 seconds
+
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
-  const recordedChunks = useRef([]);
   const timerRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchDevices = async () => {
-      const deviceInfos = await navigator.mediaDevices.enumerateDevices();
-      setDevices(deviceInfos.filter((device) => device.kind === "videoinput"));
-    };
-    fetchDevices();
-
-    return () => {
-      cleanupRecording();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!open && isRecording) {
-      cleanupRecording();
-    }
-  }, [open]);
-
-  const startTimer = () => {
-    setRecordingTime(0);
-    timerRef.current = setInterval(() => {
-      setRecordingTime((prev) => prev + 1);
-    }, 1000);
-  };
-
-  const stopTimer = () => {
-    clearInterval(timerRef.current);
-    timerRef.current = null;
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   const startRecording = async () => {
-    setIsLoading(true);
-    setIsRecording(true);
-    if (!videoUrl) {
-      setIsVisible(true);
-    }
     try {
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { deviceId: selectedDevice || undefined, ...resolution },
-        audio: true,
+        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: true
       });
 
       videoRef.current.srcObject = stream;
-      const mediaRecorder = new MediaRecorder(stream);
+      videoRef.current.play();
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          recordedChunks.current.push(event.data);
-        }
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      const chunks = [];
+
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
       };
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks.current, { type: "video/mp4" });
-        const vidUrl = URL.createObjectURL(blob);
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/mp4' });
         const file = new File([blob], "recording.mp4", { type: "video/mp4" });
-        setVideoUrl(vidUrl);
-        onStopRecording(vidUrl, file);
-        setIsVisible(false);
-        recordedChunks.current = [];
+        setVideoBlob(blob);
+        onStopRecording(file, blob);
+        stream.getTracks().forEach(track => track.stop());
+        setIsRecording(false);
+        clearInterval(timerRef.current);
+        setVideoBlob(null)
+        setIsVisible(true);
+        setRecordingTime(0)
+        setIsModalOpen(false)
       };
 
-      mediaRecorder.start();
-      mediaRecorderRef.current = mediaRecorder;
-      setIsPaused(false);
-      startTimer();
-    } catch (error) {
-      console.log(error)
-      ErrorToast("We encountered an issue accessing your camera or microphone. Please ensure they are connected and permissions are granted.");
-    } finally {
-      setIsLoading(false);
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+
+      timerRef.current = setInterval(() => {
+        setRecordingTime(prev => {
+          if (prev == MAX_RECORDING_TIME || prev > MAX_RECORDING_TIME) {
+            mediaRecorderRef.current.stop();
+            setIsRecording(false);
+            clearInterval(timerRef.current);
+            setIsVisible(false)
+            return MAX_RECORDING_TIME;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    } catch (err) {
+      console.error('Error accessing media devices:', err);
+      alert('Could not access camera or microphone');
     }
   };
 
   const stopRecording = () => {
-    mediaRecorderRef.current.stop();
-    const tracks = videoRef.current.srcObject.getTracks();
-    tracks.forEach((track) => track.stop());
-    setIsRecording(false);
-    setIsPaused(false);
-    setIsVisible(false);
-    stopTimer();
-  };
-
-  const pauseRecording = () => {
-    if (mediaRecorderRef.current?.state === 'recording') {
-      mediaRecorderRef.current.pause();
-      setIsPaused(true);
-      stopTimer();
-    }
-  };
-
-  const resumeRecording = () => {
-    if (mediaRecorderRef.current?.state === 'paused') {
-      mediaRecorderRef.current.resume();
-      setIsPaused(false);
-      startTimer();
-    }
-  };
-
-
-  const handleRemove = () => {
-    setVideoUrl(null);
-    setIsRecording(false)
-    onStopRecording(null, null);
-  }
-
-  const cleanupRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+    if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
-    }
-    
-    if (timerRef.current) {
+      setIsRecording(false);
       clearInterval(timerRef.current);
-      timerRef.current = null;
+      setVideoBlob(null)
+      setIsVisible(true);
+      setRecordingTime(0)
+      setIsModalOpen(false)
     }
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
-
-    setIsRecording(false);
-    setIsPaused(false);
-    setIsVisible(false);
-    recordedChunks.current = [];
-    setRecordingTime(0);
   };
+
 
   return (
-    <div className="">
-      <Dialog open={open} onOpenChange={(newOpen) => {
-        if (!newOpen && isRecording) {
-          cleanupRecording();
-        }
-        setOpen(newOpen);
-      }}>
-        <DialogTrigger asChild>
-          <Button variant="default" type="button" className="bg-[#abd2ab] hover:bg-[#88a888] text-black">
-            {videoUrl == null ? 'Record Video': 'View Recording'}
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-[80vw] md:max-w-[70vw] lg:max-w-[70vw]">
-          <DialogHeader>
-            <DialogTitle>Video recorder</DialogTitle>
-            <DialogDescription>
-            </DialogDescription>
-          </DialogHeader>
-          {!isRecording && !videoUrl && (
-            <>
-              {devices.length > 0 && (
-                <div className="mb-4">
-                  <label htmlFor="camera-select" className="block mb-2 text-sm font-medium">
-                    Select Camera:
-                  </label>
-                  <select
-                    id="camera-select"
-                    onChange={(e) => setSelectedDevice(e.target.value)}
-                    className="p-2 border rounded w-full"
-                  >
-                    {devices.map((device) => (
-                      <option key={device.deviceId} value={device.deviceId}>
-                        {device.label || `Camera ${device.deviceId}`}
-                      </option>
-                    ))}
-                  </select>
+    <>
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        className=" bg-[#94a48c] hover:bg-[#7e8b77] text-black/70"
+      >
+        <Camera strokeWidth={2.4} className="mr-2" /> Record Video
+      </Button>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl relative">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+            >
+              <X />
+            </button>
+
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-4">Record Your Video</h2>
+
+              {(isVisible) &&
+                <div className="bg-[#94a49c58] rounded mb-4 overflow-hidden">
+                  <video
+                    ref={videoRef}
+                    className="w-full aspect-video"
+                    muted
+                  ></video>
+                </div>
+              }
+
+              {isRecording && (
+                <div className="text-center text-red-500 mb-4 text-2xl font-bold">
+                  {formatTime(recordingTime)} / {formatTime(MAX_RECORDING_TIME)}
                 </div>
               )}
 
-              <div className="mb-4">
-                <label htmlFor="resolution-select" className="block mb-2 text-sm font-medium">
-                  Select Resolution:
-                </label>
-                <select
-                  id="resolution-select"
-                  onChange={(e) => setResolution(JSON.parse(e.target.value))}
-                  className="p-2 border rounded"
-                >
-                  <option value='{"width":1280,"height":720}'>720p</option>
-                  <option value='{"width":1920,"height":1080}'>1080p</option>
-                </select>
-              </div>
+              {/* {videoBlob ? (
+                                <video
+                                    src={URL.createObjectURL(videoBlob)}
+                                    controls
+                                    className="w-full aspect-video mb-4"
+                                ></video>
+                            ) : null} */}
 
-              <button
-                onClick={startRecording}
-                disabled={isLoading}
-                className="px-4 py-2 bg-green-500 text-white rounded"
-              >
-                {isLoading ? "Initializing..." : "Start Recording"}
-              </button>
-            </>
-          )}
-
-          {videoUrl && (
-            <video src={videoUrl} controls className="w-full h-[50vh] border mb-2" />
-          )}
-
-          {isVisible && <video ref={videoRef} autoPlay muted className="w-full h-[50vh] border mb-4" />}
-
-          {isRecording && (
-            <>
-              <p className="mb-4">Recording Time: {recordingTime}s</p>
-              <div className="flex mb-0 space-x-4">
-                <button
-                  onClick={stopRecording}
-                  className="px-4 py-2 bg-red-500 text-white rounded"
-                >
-                  Stop Recording
-                </button>
-                {!isPaused ? (
-                  <button
-                    onClick={pauseRecording}
-                    className="px-4 py-2 bg-yellow-500 text-white rounded"
+              <div className="flex justify-center space-x-4">
+                {!isRecording && !videoBlob ? (
+                  <Button
+                    onClick={startRecording}
+                    className=" bg-[#2b4033] hover:bg-[#1e3728] text-white "
                   >
-                    Pause
-                  </button>
-                ) : (
-                  <button
-                    onClick={resumeRecording}
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
-                  >
-                    Resume
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-          <DialogFooter>
-            {
-              videoUrl == null ? (
-                <></>
-              ) : <Button type="button" variant="destructive" onClick={handleRemove}>Remove recording</Button>
-            }
-            <Button type="button" onClick={() => setOpen(false)}>close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-    </div>
+                    <Camera strokeWidth={2.5} className="mr-2" /> Start Recording
+                  </Button>
+                ) : null}
+
+                {isRecording ? (
+                  <Button
+                    onClick={stopRecording}
+                    variant="destructive"
+                  >
+                    <StopCircle className="mr-2" /> Stop Recording
+                  </Button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Edit, Star,
@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import profileImage from "@/assets/profile.png";
 import { useNavigate } from 'react-router-dom';
 import { FadeLoader } from 'react-spinners';
-import { getProfile } from '@/services/api/api';
+import { getProfile, getSeekerProfile } from '@/services/api/api';
 import { formatDateTime, getImageUrl } from '@/services/helpers/helpers';
 import videoImg from '@/assets/office-background-image.jpg'
 import { IoIosRocket, IoLogoLinkedin } from 'react-icons/io';
@@ -36,7 +36,7 @@ import {
 import interviewOne from "@/assets/video-1.jpg"
 import interviewTwo from "@/assets/video-2.jpg"
 import interviewThree from "@/assets/video-3.jpg"
-
+import { format, parseISO } from 'date-fns';
 
 
 const Dashboard = () => {
@@ -46,9 +46,9 @@ const Dashboard = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await getProfile();
+      const response = await getSeekerProfile();
       const seeker = response.data;
-      setProfile(seeker);
+      setProfile(seeker.profileInfo);
       setLoading(false);
     } catch (error) {
       console.log(error)
@@ -68,54 +68,32 @@ const Dashboard = () => {
     )
   }
 
-  const analysis = typeof (profile.JobSeeker.videoAnalysis) == "string" ? JSON.parse(profile.JobSeeker.videoAnalysis) : profile.JobSeeker.videoAnalysis;
+  const analysis = typeof (profile.videoAnalysis) == "string" ? JSON.parse(profile.videoAnalysis) : profile.videoAnalysis;
 
   const profileData = {
     name: profile.name,
-    about: profile.JobSeeker.about,
-    isVerified: profile.isVerified,
-    avatar: profile.avatar,
+    about: profile.AboutMe,
+    isVerified: true,
+    avatar: profile.profilePhotoUrl,
     profileViews: 12,
     searchAppearance: 8,
-    practiceQuestions: [
+    interviewsCompleted: 12,
+    challengesCompleted: 3,
+    daysOnPlatform: 3,
+    skills: profile.Skills.map(skill => (
       {
-        question: "How do you handle conflicts within your team?",
-        difficulty: "Medium",
-        category: "Leadership",
-      },
-      {
-        question:
-          "Describe a time you had to pivot product strategy based on user feedback",
-        difficulty: "Hard",
-        category: "Product Strategy",
-      },
-      {
-        question: "What metrics do you use to measure product success?",
-        difficulty: "Medium",
-        category: "Analytics",
-      },
-      {
-        question: "How do you prioritize features in your product roadmap?",
-        difficulty: "Hard",
-        category: "Product Management",
-      },
-    ],
-    skills: profile.JobseekerSkills.map(skill => (
-      {
-        name: skill.Skill.name, level: "Expert", challenges: 8, lastUpdated: formatDateTime(skill.Skill.updatedAt)
+        name: skill.name, proficiency: skill.proficiency, challenges: 8, lastUpdated: formatDateTime(skill.updatedAt)
       }
     )),
-    softSkills: ['Leadership', 'Team Work', 'Communication'],
-    skillChallenges: [
-      "Present a technical concept to non-technical stakeholders",
-      "Resolve a team conflict scenario",
-      "Create a project timeline and resource allocation plan",
-      "Demonstrate active listening in a mock client meeting",
-    ],
+    softSkills: analysis.softSkills.map(skill => (
+      {
+        name: skill.name,
+      }
+    )),
     color: "#4A90E2",
-    videoUrl: getImageUrl(profile.JobSeeker.videoUrl),
+    videoUrl: getImageUrl(profile.videoUrl),
     completedChallenges: 7,
-    videoUploadDate: new Date(profile.JobSeeker.updatedAt).toLocaleString("en-US", {
+    videoUploadDate: new Date(profile.videoUploadDate).toLocaleString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -124,144 +102,54 @@ const Dashboard = () => {
     }),
     videoLastViewed: "2024-03-20",
     daysSinceUpload: 95,
-    isActive: profile.JobSeeker.activeStatus,
-    isPublic: profile.JobSeeker.profileVisible,
-    aiAnalysis: analysis.analysis,
+    isActive: true,
+    isPublic: true,
+    aiSummary: analysis.summary,
     aiHighlights: analysis.highlights,
     aiRecommendations: analysis.recommendations,
     registrationData: {
-      location: profile.JobSeeker.city,
-      industry: profile.JobSeeker.Industry.name,
-      yearsExperience: profile.JobSeeker.YearsOfExperience.name,
-      education: profile.JobSeeker.EducationLevel.name,
-      currentRole: "Senior Product Manager",
-      company: "Tech Innovations Inc",
-      linkedIn: "linkedin.com/in/johnsmith",
-      website: "johnsmith.com",
+      location: profile.Location,
+      industry: profile.Industry,
+      yearsExperience: profile.YearsofExperience,
+      currentRole: profile.CurrentRole,
+      company: profile.Company,
+      linkedIn: profile.LinkedInProfileUrl ? profile.LinkedInProfileUrl : 'Not defined',
+      website: profile.PortfolioUrl ? profile.PortfolioUrl : 'Not defined',
+      github: profile.GithubUrl ? profile.GithubUrl : 'Not defined',
     },
-    videoTestimonials: [
-      {
-        name: "Sarah Chen",
-        role: "Engineering Director",
-        relationship: "Former Manager",
-        company: "Tech Solutions Inc",
-        duration: "2:15",
-        recordedDate: "2024-02-15",
-        thumbnail: interviewOne,
-        videoUrl: "/testimonial-1.mp4",
-        status: "Approved",
-      },
-      {
-        name: "Michael Rodriguez",
-        role: "Senior Developer",
-        relationship: "Team Member",
-        company: "Tech Innovations Inc",
-        duration: "1:45",
-        recordedDate: "2024-02-10",
-        thumbnail: interviewTwo,
-        videoUrl: "/testimonial-2.mp4",
-        status: "Approved",
-      },
-      {
-        name: "Emily Watson",
-        role: "Product Owner",
-        relationship: "Project Collaborator",
-        company: "Digital Ventures",
-        duration: "2:30",
-        recordedDate: "2024-02-01",
-        thumbnail: interviewThree,
-        videoUrl: "/testimonial-3.mp4",
-        status: "Pending",
-      },
-    ],
-    linkedInProfile: {
-      url: "https://linkedin.com/in/johnsmith",
-      skills: [
-        "Product Strategy",
-        "Agile Methodologies",
-        "Cross-functional Leadership",
-        "Data Analytics",
-        "User Experience (UX)",
-        "Strategic Planning",
-        "Team Building",
-      ],
-      experience: [
-        {
-          role: "Senior Product Manager",
-          company: "Tech Innovations Inc",
-          duration: "2021 - Present",
-          description:
-            "Leading product strategy and development for enterprise SaaS solutions. Managing a team of 12 across product, design, and engineering.",
-          achievements: [
-            "Launched 3 major product features increasing revenue by 40%",
-            "Reduced customer churn by 25% through strategic product improvements",
-            "Led cross-functional team of 20+ members across 3 continents",
-          ],
-        },
-        {
-          role: "Product Manager",
-          company: "Digital Solutions Co",
-          duration: "2018 - 2021",
-          description:
-            "Managed full product lifecycle for B2B software platform",
-          achievements: [
-            "Grew user base from 10k to 100k in 18 months",
-            "Implemented agile methodologies improving delivery time by 35%",
-            "Secured $2M in additional funding through product success",
-          ],
-        },
-      ],
-      education: [
-        {
-          degree: "MBA - Business Administration",
-          school: "Stanford University",
-          year: "2018",
-        },
-        {
-          degree: "BS - Computer Science",
-          school: "University of California, Berkeley",
-          year: "2014",
-        },
-      ],
-      certifications: [
-        {
-          name: "Professional Scrum Master (PSM I)",
-          issuer: "Scrum.org",
-          year: "2023",
-        },
-        {
-          name: "Product Management Certification",
-          issuer: "Product School",
-          year: "2022",
-        },
-      ],
-    },
-    careerGoals: [
-      "Transition to Director of Product role within 2 years",
-      "Build and scale products that impact millions of users",
-      "Mentor junior product managers and build strong teams",
-      "Develop expertise in AI/ML product strategy",
-    ],
-    upComingInterviews: [
-      {
-        company: "Tech Corp Inc.",
-        position: "Senior Software Engineer",
-        date: "2024-01-25",
-        time: "14:00",
-      },
-      {
-        company: "Innovation Labs",
-        position: "Senior Software Engineer",
-        date: "2024-01-28",
-        time: "10:00",
-      },
-      {
-        company: "Google",
-        position: "Senior Software Engineer",
-        date: "2024-01-28",
-        time: "10:00",
-      },
-    ]
+    videoTestimonials: [],
+    education: profile.Education.forEach(edu => {
+      return {
+        "school": edu.school,
+        "degree": edu.degree,
+        "major": edu.major,
+        "startDate": format(edu.startDate, "MMM yyyy"),
+        "endDate": format(edu.endDate, "MMM yyyy")
+      }
+    }),
+    experience: profile.WorkExperience,
+    certifications: profile.Certifications.forEach(cert => {
+      return {
+        name: cert.name,
+        issuer: cert.organization,
+      }
+    }),
+    careerGoals: analysis.careerGoals,
+    upComingInterviews: []
+  };
+
+  const getProficiencyColor = (proficiency) => {
+    const colors = {
+      beginner: "bg-yellow-100 text-yellow-800",
+      intermediate: "bg-blue-100 text-blue-800",
+      advanced: "bg-green-100 text-green-800",
+      expert: "bg-purple-100 text-purple-800",
+      error: 'bg-red-100 text-red-800'
+    };
+    if (!proficiency) {
+      return colors.error
+    }
+    return colors[proficiency] || colors.intermediate;
   };
 
   return (
@@ -300,32 +188,32 @@ const Dashboard = () => {
             </div>
 
             {/* Video Section */}
-            <div className="p-0 grid grid-cols-6 gap-6">
+            <div className="p-0 grid grid-cols-7 gap-6">
               <Card className="border border-slate-500 col-span-2">
-                <CardHeader>
-                  <h2 className="text-lg font-semibold text-[#2b4033]">Platform Activity</h2>
+                <CardHeader className="p-4">
+                  <h2 className="text-base font-semibold text-[#2b4033]">Platform Activity</h2>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pl-4 pr-4 text-sm">
                   <div className="space-y-4">
                     <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
                       <p><span className="text-lg font-semibold">{profileData.profileViews} </span> Profile Views</p>
                     </div>
                     <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
-                      <p><span className="text-lg font-semibold">8 </span> Search Appearance</p>
+                      <p><span className="text-lg font-semibold">{profileData.searchAppearance} </span> Search Appearance</p>
                     </div>
                     <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
-                      <p><span className="text-lg font-semibold">5 </span> Interviews Completed</p>
+                      <p><span className="text-lg font-semibold">{profileData.interviewsCompleted} </span> Interviews Completed</p>
                     </div>
                     <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
-                      <p><span className="text-lg font-semibold">7 </span> Challenges Completed</p>
+                      <p><span className="text-lg font-semibold">{profileData.challengesCompleted} </span> Challenges Completed</p>
                     </div>
                     <div className=" border border-slate-300 px-4 py-2 rounded bg-[#acc8ac]">
-                      <p><span className="text-lg font-semibold">62 </span> Days On The Platform</p>
+                      <p><span className="text-lg font-semibold">{profileData.daysOnPlatform} </span> Days On The Platform</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              <div className='col-span-4'>
+              <div className='col-span-5'>
                 <div>
                   <div className="relative h-[57vh] rounded-t-lg bg-gray-200" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")` }}>
                     <Dialog>
@@ -378,7 +266,7 @@ const Dashboard = () => {
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">AI Summary</h2>
                   <div className="space-y-4">
-                    <p className="text-gray-700">{profileData.aiAnalysis}</p>
+                    <p className="text-gray-700">{profileData.aiSummary}</p>
 
                     <div className="space-y-2">
                       <h3 className="font-medium text-[#2b4033]">AI Highlights: These are your best features</h3>
@@ -422,24 +310,24 @@ const Dashboard = () => {
                       <p className="font-medium">{profileData.registrationData.yearsExperience}</p>
                     </div>
                     <div>
-                      <h3 className="text-sm text-gray-700">Education</h3>
-                      <p className="font-medium">{profileData.registrationData.education}</p>
-                    </div>
-                    <div>
                       <h3 className="text-sm text-gray-700">Current Role</h3>
                       <p className="font-medium">{profileData.registrationData.currentRole}</p>
                     </div>
                     <div>
                       <h3 className="text-sm text-gray-700">Company</h3>
-                      <p className="font-medium">Tech Innovations Inc</p>
+                      <p className="font-medium">{profileData.registrationData.company}</p>
                     </div>
                     <div>
                       <h3 className="text-sm text-gray-700">LinkedIn</h3>
-                      <a href='#' className="font-medium text-green-700 hover:text-green-800">{profileData.registrationData.linkedIn}</a>
+                      <a href={profileData.registrationData.linkedIn} className="font-medium text-green-700 hover:text-green-800">{profileData.registrationData.linkedIn}</a>
                     </div>
                     <div>
                       <h3 className="text-sm text-gray-700">Portfolio</h3>
-                      <a href='#' className="font-medium text-green-700 hover:text-green-800">{profileData.registrationData.website}</a>
+                      <a href={profileData.registrationData.website} className="font-medium text-green-700 hover:text-green-800">{profileData.registrationData.website}</a>
+                    </div>
+                    <div>
+                      <h3 className="text-sm text-gray-700">Github</h3>
+                      <a href={profileData.registrationData.github} className="font-medium text-green-700 hover:text-green-800">{profileData.registrationData.github}</a>
                     </div>
                   </div>
                 </CardContent>
@@ -447,28 +335,94 @@ const Dashboard = () => {
             </div>
 
             {/* Skills Section */}
-            <Tabs defaultValue="technical" className=" w-full bg-[#c3dac4] border border-slate-300 p-6 rounded-lg">
+            <Tabs defaultValue="soft" className=" w-full bg-[#c3dac4] border border-slate-300 p-6 rounded-lg">
               <TabsList>
-                <TabsTrigger value="technical"   >Technical Skills</TabsTrigger>
                 <TabsTrigger value="soft">Soft Skills</TabsTrigger>
+                <TabsTrigger value="technical">Technical Skills</TabsTrigger>
               </TabsList>
-              <TabsContent value="technical" className="space-y-2">
-                {profileData.skills.map((skill, index) => (
-                  <div className="flex items-center space-x-2" key={index}>
-                    <FaAward className="w-4 h-4 text-gray-500" />
-                    <span>{skill.name}</span>
-                  </div>
-                ))}
-              </TabsContent>
               <TabsContent value="soft" className="space-y-2">
-                {profileData.softSkills.map((skill, index) => (
-                  <div className="flex items-center space-x-2" key={index}>
-                    <FaAward className="w-4 h-4 text-gray-500" />
-                    <span>{skill}</span>
-                  </div>
-                ))}
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                  {profileData.softSkills.map((skill, index) => (
+                    // <div className="flex items-center space-x-2" key={index}>
+                    //   <FaAward className="w-4 h-4 text-gray-500" />
+                    //   <span>{skill.name}</span>
+                    // </div>
+                    <Card key={index} className="">
+                      <CardHeader className="p-4" >
+                        <CardTitle className="text-base" >
+                          <div className="flex items-center space-x-2">
+                            <FaAward className="w-3.5 h-3.5 text-gray-500" />
+                            <span>{skill.name}</span>
+                          </div>
+                        </CardTitle>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="technical" >
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                  {profileData.skills.map((skill, index) => (
+                    <Card key={index} className="">
+                      <CardHeader className="p-4" >
+                        <CardTitle className="text-base" >
+                          <div className="flex items-center space-x-2">
+                            <FaAward className="w-3.5 h-3.5 text-gray-500" />
+                            <span>{skill.name}</span>
+                          </div>
+                        </CardTitle>
+                        < CardDescription >
+                          <Badge variant="secondary" className={`${getProficiencyColor(skill.proficiency)}`} >
+                            {!skill.proficiency ? 'Add proficiency' : skill.proficiency}
+                          </Badge>
+                        </CardDescription>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
               </TabsContent>
             </Tabs>
+
+            {/* experience */}
+            <Card className="bg-[#c3dac4] border border-slate-300">
+              <CardContent className="p-6">
+                <div className=''>
+                  <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">Experience</h2>
+                  <div className="space-y-4 ">
+                    {profileData.experience.map((exp, index) => (
+                      <div className="border-l-4 border-[#94a49c] pl-4" key={index}>
+                        <div className="flex justify-between">
+                          <div>
+                            <h4 className="font-mediu ">{exp.position}</h4>
+                            <p className="text-sm text-gray-600">{exp.employer} · {format(exp.startDate, "MMM yyyy")} - {" "} {exp.currentlyWorking ? "Present" : format(exp.endDate, "MMM yyyy")}</p>
+                          </div>
+                        </div>
+                        <p className="text-sm mt-2 text-gray-800">{exp.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* education */}
+            <Card className="bg-[#c3dac4] border border-slate-300">
+              <CardContent className="p-6">
+                <div>
+                  <h2 className="text-lg font-semibold mb-4 text-[#2b4033]">Education</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium">MBA - Business Administration</h4>
+                      <p className="text-sm text-gray-600">Stanford University · 2018</p>
+                    </div>
+                    <div>
+                      <h4 className="font-medium">BS - Computer Science</h4>
+                      <p className="text-sm text-gray-600">University of California, Berkeley · 2014</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Career Goals */}
             <Card className="bg-[#c3dac4] border border-slate-300">
@@ -478,89 +432,9 @@ const Dashboard = () => {
                   {profileData.careerGoals.map((goal, index) => (
                     <div className="flex items-center space-x-2" key={index}>
                       <CheckCircle className="w-5 h-5 text-gray-500" />
-                      <span className='text-gray-700'>{goal}</span>
+                      <span className='text-gray-700'>{goal.name}</span>
                     </div>
                   ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* LinkedIn Profile */}
-            <Card className="bg-[#c3dac4] border border-slate-300">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-6">
-                  <h2 className="text-lg font-semibold text-[#2b4033]">LinkedIn Profile</h2>
-                  <IoLogoLinkedin className="w-6 h-6 text-blue-500" />
-                </div>
-
-                {/* Experience */}
-                <div className=" grid grid-cols-2 gap-10">
-                  <div className=''>
-                    <h3 className="font-medium mb-2 text-[#18241d]">Experience</h3>
-                    <div className="space-y-4 ">
-                      <div className="border-l-4 border-green-500 pl-4">
-                        <div className="flex justify-between">
-                          <div>
-                            <h4 className="font-mediu ">Senior Product Manager</h4>
-                            <p className="text-sm text-gray-600">Tech Innovations Inc · 2021 - Present</p>
-                          </div>
-                        </div>
-                        <p className="mt-2 text-sm text-gray-800">Leading product strategy and development for enterprise SaaS solutions. Managing a team of 12 across product, design, and engineering.</p>
-                        <ul className="mt-2 space-y-1 text-sm text-gray-800">
-                          <li>Launched 3 major product features increasing revenue by 40%</li>
-                          <li>Launched 3 major product features increasing revenue by 40%</li>
-                        </ul>
-                      </div>
-
-                      <div className="border-l-4 border-green-500 pl-4">
-                        <div className="flex justify-between">
-                          <div>
-                            <h4 className="font-medium">Product Manager</h4>
-                            <p className="text-sm text-gray-600">Digital Solutions Co · 2019 - 2021</p>
-                          </div>
-                        </div>
-                        <p className="mt-2 text-sm text-gray-800">Managed full product lifecycle for B2B software platform</p>
-                        <ul className="mt-2 space-y-1 text-sm text-gray-800">
-                          <li>Grew user base from 10k to 100k in 18 months</li>
-                          <li>Implemented Agile methodologies improving delivery time by 35%</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-
-                  {/* Education */}
-                  <div className='space-y-6'>
-                    <div>
-                      <h3 className="font-medium mb-2">Education</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium">MBA - Business Administration</h4>
-                          <p className="text-sm text-gray-600">Stanford University · 2018</p>
-                        </div>
-                        <div>
-                          <h4 className="font-medium">BS - Computer Science</h4>
-                          <p className="text-sm text-gray-600">University of California, Berkeley · 2014</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Certifications */}
-                    <div>
-                      <h3 className="font-medium mb-2">Certifications</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium">Professional Scrum Master (PSM I)</h4>
-                          <p className="text-sm text-gray-600">Scrum.org · 2023</p>
-                        </div>
-                        <div>
-                          <h4 className="font-medium">Product Management Certification</h4>
-                          <p className="text-sm text-gray-600">Product School · 2022</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                 </div>
               </CardContent>
             </Card>
@@ -656,19 +530,26 @@ const Dashboard = () => {
                 <Button variant="link" className="text-sm text-[#2b4033]"><ArrowRight /> View all</Button>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {profileData.upComingInterviews.map((interview, index) => (
-                    // <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
-                    <div key={index} className="border px-2 py-2 rounded bg-[#c3dac4]">
-                      <h3 className="font-medium">{interview.position}</h3>
-                      <p className="text-sm text-gray-600">{interview.company}</p>
-                      <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500">
-                        <Calendar className="w-4 h-4" />
-                        <span>{interview.date} at {interview.time}</span>
+                {profileData.upComingInterviews.length == 0 ?
+                  <div className="border px-2 py-2 rounded bg-[#c3dac4]">
+                    <p className='text-base text-gray-800'>You do not have any upcoming interviews yet.</p>
+                  </div>
+                  :
+                  <div className="space-y-4">
+                    {profileData.upComingInterviews.map((interview, index) => (
+                      // <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
+                      <div key={index} className="border px-2 py-2 rounded bg-[#c3dac4]">
+                        <h3 className="font-medium">{interview.position}</h3>
+                        <p className="text-sm text-gray-600">{interview.company}</p>
+                        <div className="flex items-center space-x-2 mt-1 text-sm text-gray-500">
+                          <Calendar className="w-4 h-4" />
+                          <span>{interview.date} at {interview.time}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                }
+
               </CardContent>
             </Card>
           </div>

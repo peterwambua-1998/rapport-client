@@ -1,53 +1,70 @@
+import { Button } from "@/components/ui/button";
+import { getQuestions } from "@/services/api/api";
 import { useState } from "react";
 import { FaArrowLeft, FaCheckCircle, FaClock, FaExclamationTriangle, FaHourglassEnd, FaInfoCircle, FaSyncAlt, FaUserCheck, FaVideo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { PulseLoader } from "react-spinners";
+import VideoInterview from "./Questions";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Check, Award } from 'lucide-react';
 
 const InterviewPrep = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [isSelected, setIsSelected] = useState(false);
-  const navigate = useNavigate();
-  const interviewTips = [
-    "Find a quiet, well-lit room",
-    "Position yourself against a clean background",
-    "Dress professionally from head to toe",
-    "Test your camera and microphone beforehand",
-    "Look directly into the camera when speaking",
-    "Keep good posture throughout the interview",
-  ];
+  const [loading, setLoading] = useState(false);
+  const [qtnChosen, setQtnChosen] = useState([]);
+  const [step, setStep] = useState('selection');
+  const [isOpen, setIsOpen] = useState(false);
 
-  const generateQuestions = () => {
-    const questionSets = [
-      [
-        "Based on your industry experience, tell me about your most relevant background",
-        "Given your role in previous companies, what are your greatest achievements?",
-        "Considering your management style, how do you handle challenging situations?",
-        "With your skill set, where do you see yourself in five years?",
-        "Looking at your background, what makes you unique?",
-        "Based on your qualifications, why should we choose you for this position?",
-      ],
-      [
-        "Given your technical expertise, describe a project you're most proud of",
-        "Based on your past roles, how do you stay organized and manage deadlines?",
-        "Considering your work history, what's your approach to working in teams?",
-        "Looking at your career path, what motivates you professionally?",
-        "Given your experience level, how do you handle constructive criticism?",
-        "Based on your market value, what are your salary expectations?",
-      ],
-      [
-        "Considering your background, what interests you about this role?",
-        "Given your work environment preferences, how do you deal with pressure?",
-        "Based on your past companies, describe your ideal work environment",
-        "Looking at your team experience, what's your leadership style?",
-        "Given your professional journey, how do you continue learning and growing?",
-        "Considering your career goals, what questions do you have for us?",
-      ],
-    ];
-
-    const randomSet =
-      questionSets[Math.floor(Math.random() * questionSets.length)];
-    setQuestions(randomSet);
-    setIsSelected(true);
+  const toggleQuestion = (question) => {
+    setQtnChosen(prev =>
+      prev.includes(question)
+        ? prev.filter(q => q !== question)
+        : [...prev, question]
+    );
   };
+
+
+  const generateQuestions = async () => {
+    try {
+      setLoading(true);
+      const res = await getQuestions();
+      const questionSets = res.data.questions;
+      setQuestions(questionSets);
+      setIsSelected(true);
+      setLoading(false);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+
+  const startInterview = () => {
+    if (qtnChosen.length === 6) {
+      setQtnChosen(qtnChosen);
+      setStep('recording');
+
+    }
+  };
+
+  const endProcess = () => {
+    setQuestions([])
+    setQtnChosen([])
+    setStep('completed')
+    setIsOpen(true);
+  }
+
+  if (step === 'recording') {
+    return <VideoInterview chosenQuestions={qtnChosen} endProcess={endProcess} />
+  }
 
   return (
     <div className="min-h-screen bg-[#edeeed] p-8">
@@ -56,7 +73,7 @@ const InterviewPrep = () => {
           Interview Preparation Guide
         </h1>
         <div className="bg-[#c3dac4] rounded-lg p-6 mb-8 border border-slate-300">
-          <h2 className="text-2xl font-crimson-text text-[#34495e] mb-4">
+          <h2 className="text-2xl  text-[#34495e] mb-4">
             <FaVideo className="mr-2 inline" />
             Video Interview Tips
           </h2>
@@ -71,7 +88,7 @@ const InterviewPrep = () => {
         </div>
 
         <div className="bg-[#c3dac4] rounded-lg p-6 mb-8 border border-slate-300">
-          <h2 className="text-2xl font-crimson-text text-[#34495e] mb-4">
+          <h2 className="text-2xl  text-[#34495e] mb-4">
             <FaInfoCircle className="mr-2 inline" />
             Interview Requirements
           </h2>
@@ -94,62 +111,89 @@ const InterviewPrep = () => {
             </li>
           </ul>
 
-          <div className="text-center space-y-4">
-            <button
-              onClick={generateQuestions}
-              className="bg-[#3498db] text-white px-8 py-3 rounded-lg hover:bg-[#2980b9] transition-colors font-crimson-text"
-            >
-              <FaSyncAlt className="mr-2 inline" />
-              Generate Interview Questions
-            </button>
 
-            <div className="flex gap-4">
-              <button onClick={() =>  navigate(-1)} className="w-1/2 px-8 py-3 rounded-lg bg-[#e74c3c] hover:bg-[#c0392b] text-white transition-colors font-crimson-text">
-              <FaArrowLeft  className="mr-2 inline" />
-                Not Ready
-              </button>
+          <div className="flex gap-4">
+            <Button variant="destructive" onClick={() => navigate(-1)} className="w-full">
+              <FaArrowLeft className="mr-2 inline" />
+              Not Ready
+            </Button>
 
-              <button
-                disabled={!isSelected}
-                className={`w-1/2 px-8 py-3 rounded-lg transition-colors font-crimson-text ${isSelected
-                  ? "bg-green-500 hover:bg-green-600 text-white cursor-pointer"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-              >
-                <FaVideo className="mr-2 inline" />
-                Proceed
-              </button>
-            </div>
+
+            <Button disabled={loading} onClick={generateQuestions} className="bg-[#949894] hover:bg-[#858885] w-full">
+              {loading ? <PulseLoader size={8} color="#ffffff" /> : <span>
+                <FaSyncAlt className="mr-2 inline" />
+                Generate Interview Questions
+              </span>}
+            </Button>
+
           </div>
         </div>
 
         {questions.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-crimson-text text-[#34495e] mb-4">
-              <i className="fas fa-question-circle mr-2"></i>
+          <div className="bg-white rounded-lg p-6">
+            <h2 className="text-2xl text-[#34495e] font-semibold">
               Your Profile-Matched Questions
-              {isSelected && (
-                <span className="text-sm text-green-500 ml-2">
-                  <i className="fas fa-check-circle mr-1"></i>
-                  Questions Selected
-                </span>
-              )}
             </h2>
+            <p className="mb-4">Select six questions to proceed</p>
             <ul className="space-y-4">
               {questions.map((question, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="font-bold mr-2 text-[#3498db]">
-                    {index + 1}.
-                  </span>
+                <li key={index} className="flex items-center gap-4">
+                  <input
+                    type="checkbox"
+                    id="profileVisible"
+                    name="profileVisible"
+                    checked={qtnChosen.includes(question)}
+                    onChange={() => toggleQuestion(question)}
+                  />
                   <span className="text-gray-700">{question}</span>
                 </li>
               ))}
             </ul>
           </div>
         )}
+
+        <Button
+          onClick={startInterview}
+          disabled={qtnChosen.length !== 6}
+          type="button" className="bg-[#2b4033] hover:bg-[#1e3728] text-white w-full mt-4">
+
+          <FaVideo className="mr-2 inline" /> Proceed
+        </Button>
       </div>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-center">
+              <Award className="mr-2 text-green-600" size={24} />
+              Interview Completed
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              Congratulations! You've successfully answered all selected interview questions.
+              Your recorded videos are ready for submission.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center">
+            <Button
+              onClick={() => setIsOpen(false)}
+            >
+              Submit Interview
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
 export default InterviewPrep;
+
+
+const interviewTips = [
+  "Find a quiet, well-lit room",
+  "Position yourself against a clean background",
+  "Dress professionally from head to toe",
+  "Test your camera and microphone beforehand",
+  "Look directly into the camera when speaking",
+  "Keep good posture throughout the interview",
+];

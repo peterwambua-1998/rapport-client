@@ -6,14 +6,15 @@ import LoadingSpinner from "@/components/common/loading/LoadingSpinner";
 const RoleBasedRedirect = ({ children }) => {
   const { user, isAuthenticated, loading } = useAuth();
 
+  
+
   if (loading) {
     return (
       <div className="col-span-full text-center">
         <LoadingSpinner message="Loading" />
       </div>);
   }
-
-
+  console.log('role based')
   if (user) {
     if (user?.role) {
       switch (user?.role) {

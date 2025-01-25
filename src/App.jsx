@@ -19,6 +19,7 @@ import RequireProfile from "./components/common/auth/RequireProfile";
 import { Toaster } from "@/components/ui/toaster"
 import LoadingSpinner from "@/components/common/loading/LoadingSpinner";
 import { UserProfileProvider } from "./context/userProfilePhoto";
+import IntroductionProfile from "./pages/auth/jobseeker/Profile";
 
 function App() {
   const { loading } = useAuth();
@@ -63,7 +64,16 @@ function App() {
               }
             />
           ))}
+          {/* { path: , element:  }, */}
         </Route>
+        <Route
+            path="/jobseeker/introduction/profile"
+            element={
+              <ProtectedRoute role="job_seeker">
+               <IntroductionProfile />
+              </ProtectedRoute>
+            }
+          />
 
         {/* Recruiter Routes with MainLayout */}
         <Route element={<MainLayout />}>
@@ -78,6 +88,7 @@ function App() {
               }
             />
           ))}
+          
         </Route>
 
         {/* Admin Routes with MainLayout */}

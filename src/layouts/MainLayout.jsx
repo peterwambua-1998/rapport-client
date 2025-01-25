@@ -6,9 +6,9 @@ const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="h-screen flex overflow-hidden bg-gray-100">
+    <div className="h-screen w-[100vw] flex overflow-hidden bg-white ">
       {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
+      <div className="overflow-y-auto w-full">
         <DashboardHeader setSidebarOpen={setSidebarOpen} />
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           {/* <div className="py-2">

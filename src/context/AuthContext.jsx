@@ -42,9 +42,9 @@ export const AuthProvider = ({ children }) => {
 
   const refresh = async () => {
     try {
+      setLoading(true);
+
       const userData = await getCurrentUser();
-      console.log("userData=====");
-      console.log(userData);
       
       if (userData.data.user) {
         setUser(userData.data.user);

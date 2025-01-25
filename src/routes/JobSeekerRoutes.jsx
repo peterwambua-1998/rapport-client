@@ -12,6 +12,8 @@ import InterviewPrep from "../pages/jobseeker/InterviewPrep";
 import Questions from "../pages/jobseeker/Questions";
 import EditProfile from "@/pages/jobseeker/EditProfile";
 import VerifyEmail from "@/pages/auth/jobseeker/JobSeekerVerifyEmail";
+import IntroductionProfile from "@/pages/auth/jobseeker/Profile";
+import DataSource from "@/pages/auth/jobseeker/components/dataSource";
 
 const jobseekerRoutes = [
   { path: "/jobseeker/dashboard", element: <Dashboard /> },

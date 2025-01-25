@@ -44,18 +44,20 @@ api.interceptors.response.use(
   }
 );
 
+/**
+ * Auth routes
+ */
 export const register = (userData) => {
   return api.post("/auth/register", userData);
 };
 
-export const registerJobseeker = (userData) => {
+export const registerJobSeeker = (userData) => {
   return api.post("/auth/jobseeker-register", userData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 };
-
 export const login = (credentials) => api.post("/auth/login", credentials);
 export const forgotPassword = (data) => api.post("/auth/forgot-password", data);
 export const resetPassword = (token, newPassword) =>
@@ -64,6 +66,39 @@ export const setNewPassword = (id, newPassword) =>
   api.put(`/auth/set-password/${id}/set`, { password: newPassword });
 export const verifyEmail = (token) =>
   api.put(`/auth/verify-email/${token}`);
+export const resendVerification = (data) => api.post(`/auth/resend/verification`, data);
+/**
+ * Auth routes
+ */
+
+
+/**
+ * Data source routes
+ */
+export const processDataSourceFile = (data) => {
+  return api.post(`/auth/file/process`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const storePersonalInfo = (data) => {
+  return api.post(`/auth/personal-info/store`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+export const storeProfessionalInfo = (data) => api.post(`/auth/professional-info/store`, data);
+export const storeEducationInfo = (data) => api.post(`/auth/education-info/store`, data);
+export const storeExperienceInfo = (data) => api.post(`/auth/experience-info/store`, data);
+export const storeCertInfo = (data) => api.post(`/auth/cert-info/store`, data);
+export const storeSkillInfo = (data) => api.post(`/auth/skills-info/store`, data);
+export const getSeekerProfile = () => api.get("/auth/profile/job-seeker");
+/**
+ * Data source routes
+ */
 
 export const changePassword = (data) => api.put("/auth/change-password", data);
 

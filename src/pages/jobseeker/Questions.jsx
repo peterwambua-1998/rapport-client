@@ -1,149 +1,84 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { getQuestions } from "@/services/api/api";
+import React, { useState, useRef, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Camera,
+  StopCircle,
+  PlayCircle,
+  Check
+} from 'lucide-react';
+import VideoRecorder from './VideoRecording';
 
-const TestPage = () => {
-  const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes
-  const [isTestOver, setIsTestOver] = useState(false);
-  const [results, setResults] = useState(null);
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
+const VideoInterview = ({ chosenQuestions, endProcess }) => {
+  const [questions, setQuestions] = useState(chosenQuestions);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [recordedVideos, setRecordedVideos] = useState([]);
+  const [recordedVideosFile, setRecordedVideosFile] = useState([]);
+
+  const nextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      handleTestEnd();
-    }
-  }, [timeLeft]);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const qs = await getQuestions(); 
-        const data = JSON.parse(qs.data);
-        
-        console.log(data.questions);
-        setQuestions(data.questions);
-        setLoading(false);
-      } catch (err) {
-        // setError("Error fetching recruiter profile.");
-        setError(err);
-      } finally {
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  const handleChange = (id, value) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleTestEnd = async () => {
-    setIsTestOver(true);
-    await calculateResults();
-  };
-
-  const handleSubmit = () => {
-    handleTestEnd();
-  };
-
-  const calculateResults = async () => {
-    try {
-      const response = await axios.post("/api/validate-answers", {
-        questions: questions.map((q) => ({ id: q.id, question: q.question })),
-        answers,
-      });
-
-      setResults(response.data.results);
-    } catch (error) {
-      console.error("Error validating answers with AI:", error);
+      // Last question completed
+      submitInterview();
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <p>loading questions...</p>
-      </div>
-    );
+  const handleStopRecording = (file, blob) => {
+    const videoUrl = URL.createObjectURL(blob);
+    setRecordedVideos(prev => [...prev, videoUrl]);
+    setRecordedVideosFile(prev => [...prev, {file:file,  qtn: questions[currentQuestionIndex]}]);
   }
 
-  if (error != null) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <p>error...</p>
-      </div>
-    );
+  const submitInterview = () => {
+    const formData = new FormData();
+    recordedVideosFile.forEach((obj, i) => {
+      formData.append(`video-${i}`, obj.file);
+      formData.append(`qtn-${i}`, obj.qtn);
+    });
+    endProcess();
   }
+
+  const isNextEnabled = recordedVideos.length === currentQuestionIndex + 1;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-center mb-4">Job Seeker Test</h1>
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-gray-600">
-            Time Remaining: {Math.floor(timeLeft / 60)}:
-            {timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}
+    <Card className="w-full max-w-md mx-auto mt-10">
+      <CardHeader>
+        <CardTitle>Video Interview</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <p className="text-center font-semibold">
+            {questions[currentQuestionIndex]}
           </p>
-          {isTestOver && (
-            <p className="text-red-600 font-semibold">Time's up!</p>
+
+          <VideoRecorder onStopRecording={handleStopRecording} />
+
+
+          {recordedVideos[currentQuestionIndex] && (
+            <video
+              src={recordedVideos[currentQuestionIndex]}
+              controls
+              className="w-full rounded-lg mt-4"
+            />
           )}
-        </div>
 
-        {!isTestOver ? (
-          <>
-            {questions.map((q, index) => (
-              <div key={index} className="mb-4">
-                <p className="font-semibold mb-2">{q.question}</p>
-                <textarea
-                  className="w-full p-2 border rounded"
-                  placeholder="Your answer..."
-                  rows="3"
-                  value={answers[q.id] || ""}
-                  onChange={(e) => handleChange(q.id, e.target.value)}
-                  disabled={isTestOver}
-                />
-              </div>
-            ))}
-
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
-          </>
-        ) : (
-          <div>
-            <h2 className="text-xl font-bold text-center mb-4">Results</h2>
-            {results &&
-              results.map((result, index) => (
-                <div key={index} className="mb-4">
-                  <p className="font-semibold">Question: {result.question}</p>
-                  <p
-                    className={`text-gray-700 ${
-                      result.isCorrect ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    Your Answer: {result.answer}
-                  </p>
-                  {!result.isCorrect && (
-                    <p className="text-gray-700">
-                      Correct Answer: {result.correctAnswer}
-                    </p>
-                  )}
-                </div>
-              ))}
+          <div className="flex justify-between">
+            {recordedVideos[currentQuestionIndex] && isNextEnabled && (
+              <Button
+                onClick={nextQuestion}
+                className="w-full"
+              >
+                <Check className="mr-2" />{recordedVideos.length == 6 ? 'Finish' : 'Next Question'} 
+              </Button>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+          
+        </div>
+      </CardContent>
+    </Card>
   );
-};
+}
 
-export default TestPage;
+export default VideoInterview;

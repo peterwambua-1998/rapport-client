@@ -36,7 +36,7 @@ const PasswordStrength = ({ password, setIsValid }) => {
 
   if (!password) return null;
   return (
-    <ul>
+    <ul className="prose text-xs">
       {criteriaList.map((criteria) => (
         <li
           key={criteria.id}

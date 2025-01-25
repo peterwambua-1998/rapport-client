@@ -5,7 +5,7 @@ const PublicLayout = ({ children }) => {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <main style={{ flex: 1, padding: "10px" }}>
+        <main style={{ flex: 1 }}>
           {" "}
           <Outlet /> {/* Render nested routes */}
         </main>

@@ -1,114 +1,149 @@
-import React from "react";
-import {
-  FaRegCheckCircle,
-  FaRegClock,
-  FaClipboardList,
-  FaUser,
-  FaSyncAlt,
-  FaVideo,
-  FaArrowLeft,
-  FaClipboardCheck,
-  FaCheckCircle,
-  FaClock,
-  FaHourglassEnd,
-  FaUserCheck,
-} from "react-icons/fa";
-import { FaCircleInfo } from "react-icons/fa6";
-import { IoIosWarning } from "react-icons/io";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  Camera, 
+  StopCircle, 
+  PlayCircle, 
+  Check 
+} from 'lucide-react';
 
-const InterviewPrep = () => {
-  const navigate = useNavigate();
+const questions = [
+  "Tell me about your professional journey",
+  "What motivates you in your career?",
+  "Describe a challenging project you've worked on",
+  "What are your career goals?",
+  "How do you approach problem-solving?"
+];
+
+export default function VideoInterview() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedVideos, setRecordedVideos] = useState([]);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const videoRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+
+  useEffect(() => {
+    // Request camera access
+    async function setupCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: true, 
+        audio: true 
+      });
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        
+        const recorder = new MediaRecorder(stream);
+        
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            chunksRef.current.push(e.data);
+          }
+        };
+        
+        recorder.onstop = () => {
+          const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+          const videoUrl = URL.createObjectURL(blob);
+          
+          setRecordedVideos(prev => [...prev, videoUrl]);
+          chunksRef.current = [];
+        };
+        
+        setMediaRecorder(recorder);
+        mediaRecorderRef.current = recorder;
+      }
+    }
+    
+    setupCamera();
+  }, []);
+
+  const startRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.start();
+      setIsRecording(true);
+      
+      // Auto stop after 2 minutes
+      setTimeout(() => {
+        stopRecording();
+      }, 120000);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    }
+  };
+
+  const isNextEnabled = recordedVideos.length === currentQuestionIndex + 1;
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold text-center mb-2 mt-2">
-        Interview Preparation Guide
-      </h1>
-      <div className=" mx-auto bg-gray-100 shadow-md rounded-lg overflow-hidden p-8">
-        {/* Video Interview Tips Card */}
-        <section className="mb-8 bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <FaVideo className="text-gray-800 mr-2" />
-            Video Interview Tips
-          </h2>
-          <div className="text-gray-600">
-            <div className="flex items-center mb-2">
-              <FaCheckCircle className="text-green-500 mr-2" /> Find a quiet,
-              well-lit room
-            </div>
-            <div className="flex items-center mb-2">
-              <FaCheckCircle className="text-green-500 mr-2" /> Position
-              yourself against a clean background
-            </div>
-            <div className="flex items-center mb-2">
-              <FaCheckCircle className="text-green-500 mr-2" /> Dress
-              professionally from head to toe
-            </div>
-            <div className="flex items-center mb-2">
-              <FaCheckCircle className="text-green-500 mr-2" /> Test your camera
-              and microphone beforehand
-            </div>
-            <div className="flex items-center mb-2">
-              <FaCheckCircle className="text-green-500 mr-2" /> Look directly
-              into the camera when speaking
-            </div>
-            <div className="flex items-center">
-              <FaCheckCircle className="text-green-500 mr-2" /> Keep good
-              posture throughout the interview
-            </div>
+    <Card className="w-full max-w-md mx-auto mt-10">
+      <CardHeader>
+        <CardTitle>Video Interview</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <p className="text-center font-semibold">
+            {questions[currentQuestionIndex]}
+          </p>
+          
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            muted 
+            className="w-full rounded-lg"
+          />
+          
+          <div className="flex justify-center space-x-4">
+            {!isRecording ? (
+              <Button 
+                onClick={startRecording} 
+                variant="outline"
+                disabled={isRecording}
+              >
+                <Camera className="mr-2" /> Start Recording
+              </Button>
+            ) : (
+              <Button 
+                onClick={stopRecording} 
+                variant="destructive"
+              >
+                <StopCircle className="mr-2" /> Stop Recording
+              </Button>
+            )}
           </div>
-        </section>
-
-        {/* Interview Requirements Card */}
-        <section className="mb-8 bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center">
-            <FaCircleInfo className="text-gray-800 mr-2" />
-            Interview Requirements
-          </h2>
-          <div className="text-gray-600">
-            <div className="flex items-center mb-2">
-              <FaClock className="text-blue-500 mr-2" /> Each answer should be
-              1-2 minutes long
-            </div>
-            <div className="flex items-center mb-2">
-              <FaHourglassEnd className="text-blue-500 mr-2" /> Total interview
-              time should not exceed 7 minutes
-            </div>
-            <div className="flex items-center text-red-600 mb-2">
-              <IoIosWarning dList className=" mr-2" /> You must select and save
-              a set of questions before proceeding
-            </div>
-            <div className="flex items-center">
-              <FaUserCheck className="text-blue-500 mr-2" /> Questions are
-              tailored to your profile information
-            </div>
-          </div>
-        </section>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col items-center space-y-4">
-          <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 flex items-center">
-            <FaSyncAlt className="mr-2" />
-            Generate Interview Questions
-          </button>
-          <div className="flex justify-between w-full">
-            <button className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 flex items-center justify-center text-center w-1/2 mr-2">
-              <FaArrowLeft className="mr-2" />
-              Not Ready
-            </button>
-            <button
-              className="bg-gray-400 text-white py-2 px-4 rounded-lg flex items-center justify-center text-center w-1/2 ml-2"
-              onClick={() => navigate("/jobseeker/questions")}
-            >
-              <FaVideo className="mr-2" />
-              Proceed
-            </button>
+          
+          {recordedVideos[currentQuestionIndex] && (
+            <video 
+              src={recordedVideos[currentQuestionIndex]} 
+              controls 
+              className="w-full rounded-lg mt-4"
+            />
+          )}
+          
+          <div className="flex justify-between">
+            {recordedVideos[currentQuestionIndex] && isNextEnabled && (
+              <Button 
+                onClick={nextQuestion}
+                className="w-full"
+              >
+                <Check className="mr-2" /> Next Question
+              </Button>
+            )}
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
-};
-
-export default InterviewPrep;
+}
