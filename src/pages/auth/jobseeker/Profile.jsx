@@ -13,7 +13,7 @@ import EducationInfo from './components/educationInfo';
 import WorkExperienceInfo from './components/workExperienceInfo';
 import CertificationsTab from './components/certificaionsInfo';
 import { PiCertificateBold } from "react-icons/pi";
-import DataSource from './components/DataSource';
+import DataSource from './components/dataSource';
 import ErrorToast from '@/components/toasts/error';
 import { Button } from '@/components/ui/button';
 import { validateIntro } from '@/services/helpers/helpers';
