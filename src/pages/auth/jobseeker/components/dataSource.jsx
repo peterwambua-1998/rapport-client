@@ -92,7 +92,7 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
             </div>
 
             <div className="container mx-auto max-w-3xl px-4">
-                <div className={`grid ${(user.linkedIn == false && user.linkedIn == true)  ? 'grid-cols-3' : 'grid-cols-2'}  gap-4`}>
+                <div className={`grid ${(user.linkedIn == false && user.linkedIn == true)  ? 'grid-cols-1  md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}  gap-4`}>
                     {(user.linkedIn == false && user.linkedIn == true)  &&
                         <Card className="bg-[#c3dac4]">
                             <CardHeader>
