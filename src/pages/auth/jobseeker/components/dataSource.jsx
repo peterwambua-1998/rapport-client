@@ -85,7 +85,7 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
     }
 
     return (
-        <div className="bg-white py-8 space-y-6">
+        <div className="bg-white space-y-6 flex flex-col items-center justify-center min-h-screen text-center">
             <div className="text-center">
                 <h4 className="font-bold text-xl">Data source</h4>
                 <p className="text-gray-600">Kindly click on one of the data sources</p>
@@ -94,13 +94,13 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
             <div className="container mx-auto max-w-3xl px-4">
                 <div className={`grid ${(user.linkedIn == false && user.linkedIn == true)  ? 'grid-cols-3' : 'grid-cols-2'}  gap-4`}>
                     {(user.linkedIn == false && user.linkedIn == true)  &&
-                        <Card>
+                        <Card className="bg-[#c3dac4]">
                             <CardHeader>
                                 <CardTitle className="text-xl">LinkedIn</CardTitle>
                                 <CardDescription>Your profile data will be extracted from LinkedIn.</CardDescription>
                             </CardHeader>
                             <CardFooter>
-                                <Button onClick={handleLinkedIn}>Authorize</Button>
+                                <Button onClick={handleLinkedIn} className="bg-[#2b4033] hover:bg-[#1e3728] text-white">Authorize</Button>
                             </CardFooter>
                         </Card>
                     }
@@ -112,7 +112,7 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
                         </CardHeader>
                         <CardFooter>
                             <Dialog>
-                                <DialogTrigger className="bg-green-500 h-10 px-2 py-1 md:px-4 md:py-2 rounded-md font-medium">
+                                <DialogTrigger className="bg-[#2b4033] hover:bg-[#1e3728] text-white h-10 px-2 py-1 md:px-4 md:py-2 rounded-md font-medium">
                                     Upload CV
                                 </DialogTrigger>
                                 <DialogContent>
