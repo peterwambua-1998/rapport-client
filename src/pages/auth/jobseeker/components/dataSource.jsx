@@ -85,7 +85,7 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
     }
 
     return (
-        <div className="bg-white space-y-6 flex flex-col items-center justify-center min-h-screen text-center">
+        <div className="bg-white space-y-6 mt-6">
             <div className="text-center">
                 <h4 className="font-bold text-xl">Data source</h4>
                 <p className="text-gray-600">Kindly click on one of the data sources</p>
@@ -105,7 +105,7 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
                         </Card>
                     }
 
-                    <Card>
+                    <Card className="bg-[#c3dac4]">
                         <CardHeader>
                             <CardTitle className="text-xl">Upload CV</CardTitle>
                             <CardDescription>Your profile data will be extracted from your CV.</CardDescription>
@@ -166,13 +166,13 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
                         </CardFooter>
                     </Card>
 
-                    <Card>
+                    <Card className="bg-[#c3dac4]">
                         <CardHeader>
                             <CardTitle className="text-xl">Create New Profile</CardTitle>
                             <CardDescription>You will have to fill profile data.</CardDescription>
                         </CardHeader>
                         <CardFooter>
-                            <Button className="bg-green-500 text-black" onClick={() => setDataSource('new')}>New Profile</Button>
+                            <Button className="bg-[#2b4033] hover:bg-[#1e3728] text-white" onClick={() => setDataSource('new')}>New Profile</Button>
                         </CardFooter>
                     </Card>
                 </div>
