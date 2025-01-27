@@ -1,16 +1,23 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogTitle, DialogOverlay, DialogContent, DialogHeader, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, SchoolIcon, GraduationCap, ChevronRight, Pickaxe, BookOpen, Download } from "lucide-react";
-import { format, parseISO } from 'date-fns';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogHeader,
+    DialogTrigger,
+    DialogDescription,
+} from "@/components/ui/dialog";
+import { BookOpen, Download, Pencil, X } from "lucide-react";
+import { format } from "date-fns";
 import { storeEducationInfo } from "@/services/api/api";
 import ErrorToast from "@/components/toasts/error";
 import { PulseLoader } from "react-spinners";
 import SuccessToast from "@/components/toasts/success";
+import { Card } from "@/components/ui/card";
 
 const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
     const [educationList, setEducationList] = useState(dataSourceResult.Education.length > 0 ? dataSourceResult.Education : []);
@@ -18,6 +25,7 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editIndex, setEditIndex] = useState(null);
     const [educationData, setEducationData] = useState({
         school: "",
         degree: "",
@@ -31,7 +39,6 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
         setEducationData((prev) => ({ ...prev, [field]: value }));
     };
 
-
     // Validate modal form fields
     const validateEducationForm = () => {
         const newErrors = {};
@@ -39,16 +46,37 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
         if (!educationData.degree) newErrors.degree = "Field is required.";
         if (!educationData.major) newErrors.major = "Field is required.";
         if (!educationData.startDate) newErrors.startDate = "Field is required.";
-        if (!educationData.endDate)
-            newErrors.endDate = "Field is required.";
+        if (!educationData.endDate) newErrors.endDate = "Field is required.";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleAddEducation = () => {
-        if (validateEducationForm()) {
-            setEducationList([...educationList, { ...educationData }]);
+    const handleEditEducation = (index) => {
+        const education = educationList[index];
+        setEducationData({
+            school: education.school,
+            degree: education.degree,
+            major: education.major,
+            startDate: education.startDate,
+            endDate: education.endDate,
+        });
+        setEditIndex(index);
+        setIsModalOpen(true);
+    };
 
+    const handleSaveEducation = () => {
+        if (validateEducationForm()) {
+            if (editIndex !== null) {
+                // Update existing education
+                const updatedList = [...educationList];
+                updatedList[editIndex] = { ...educationData };
+                setEducationList(updatedList);
+            } else {
+                // Add new education
+                setEducationList([...educationList, { ...educationData }]);
+            }
+
+            // Reset form
             setEducationData({
                 school: "",
                 degree: "",
@@ -56,9 +84,31 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                 startDate: "",
                 endDate: "",
             });
+            setEditIndex(null);
             setErrors({});
             setIsModalOpen(false);
         }
+    };
+
+    const handleDeleteEducation = (index) => {
+        const updatedList = educationList.filter((_, i) => i !== index);
+        setEducationList(updatedList);
+    };
+
+    const handleModalOpen = (open) => {
+        if (!open) {
+            // Reset form when closing modal
+            setEducationData({
+                school: "",
+                degree: "",
+                major: "",
+                startDate: "",
+                endDate: "",
+            });
+            setEditIndex(null);
+            setErrors({});
+        }
+        setIsModalOpen(open);
     };
 
     const handleSubmit = async () => {
@@ -66,33 +116,34 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
             setLoading(true);
             const store = await storeEducationInfo({ educationData: educationList });
             setLoading(false);
-            SuccessToast('Your data has been stored. You can continue with other tabs.')
-            setActiveTab('experience')
+            SuccessToast("Your data has been stored. You can continue with other tabs.");
+            setActiveTab("experience");
         } catch (error) {
             console.log(error);
             setLoading(false);
-            ErrorToast('Error occurred, kindly refresh and retry');
+            ErrorToast("Error occurred, kindly refresh and retry");
         }
-    }
+    };
 
     return (
         <TabsContent value="education" className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Education</h3>
-                {/* Modal for Adding Education */}
-                <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h3 className="text-lg sm:text-xl font-semibold">Education</h3>
+                <Dialog open={isModalOpen} onOpenChange={handleModalOpen}>
                     <DialogTrigger asChild>
                         <Button className="w-full sm:w-auto bg-[#94a48c] hover:bg-[#7e8b77] text-black/70">
                             Add Education
                         </Button>
                     </DialogTrigger>
-                    <DialogContent
-                        className="sm:max-w-[600px] w-[95%] max-h-[90vh] overflow-y-auto"
-                    >
+                    <DialogContent className="sm:max-w-[600px] w-[95%] max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle className="text-[#2b4033]">Add Education</DialogTitle>
+                            <DialogTitle className="text-[#2b4033]">
+                                {editIndex !== null ? "Edit Education" : "Add Education"}
+                            </DialogTitle>
                             <DialogDescription>
-                                Add your education details below
+                                {editIndex !== null
+                                    ? "Edit your education details below"
+                                    : "Add your education details below"}
                             </DialogDescription>
                         </DialogHeader>
 
@@ -100,6 +151,7 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                             <div>
                                 <Label>School</Label>
                                 <Input
+                                    className="w-full"
                                     placeholder="Enter name of the school"
                                     value={educationData.school}
                                     onChange={(e) => handleInputChange("school", e.target.value)}
@@ -110,6 +162,7 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                             <div>
                                 <Label>Degree</Label>
                                 <Input
+                                    className="w-full"
                                     placeholder="Enter degree"
                                     value={educationData.degree}
                                     onChange={(e) => handleInputChange("degree", e.target.value)}
@@ -120,6 +173,7 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                             <div>
                                 <Label>Major</Label>
                                 <Input
+                                    className="w-full"
                                     placeholder="Enter Major"
                                     value={educationData.major}
                                     onChange={(e) => handleInputChange("major", e.target.value)}
@@ -127,7 +181,7 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                                 {errors.major && <p className="text-sm text-red-600">{errors.major}</p>}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <Label>Start Date</Label>
                                     <Input
@@ -144,49 +198,94 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                                         value={educationData.endDate}
                                         onChange={(e) => handleInputChange("endDate", e.target.value)}
                                     />
-                                    {errors.endDate && (
-                                        <p className="text-sm text-red-600">{errors.endDate}</p>
-                                    )}
+                                    {errors.endDate && <p className="text-sm text-red-600">{errors.endDate}</p>}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-6 flex justify-end space-x-4">
-                            <Button type="button" onClick={() => setIsModalOpen(false)} variant="outline">
+                        <div className="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+                            <Button type="button" onClick={() => handleModalOpen(false)} variant="outline">
                                 Cancel
                             </Button>
-                            <Button type="button" className="bg-[#2b4033] hover:bg-[#1e3728] text-white" onClick={handleAddEducation}>
-                                Save Draft
+                            <Button
+                                type="button"
+                                className="bg-[#2b4033] hover:bg-[#1e3728] text-white"
+                                onClick={handleSaveEducation}
+                            >
+                                {editIndex !== null ? "Update" : "Save Draft"}
                             </Button>
                         </div>
                     </DialogContent>
                 </Dialog>
-
             </div>
 
             {/* Display the education list */}
             {educationList.length > 0 ? (
                 <div className="space-y-4">
                     {educationList.map((education, index) => (
-                        <div
-                            key={index}
-                            className="p-4 border rounded shadow-sm flex justify-between items-center"
-                            style={{
-                                backgroundColor: "#ffffff",
-                                borderColor: "#c3dac4",
-                            }}
-                        >
-                            <div>
-                                <h4 className="font-semibold">{education.school}</h4>
-                                <p className="text-sm text-gray-500">
-                                    {education.degree} in {education.major}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {format(education.startDate, "MMM yyyy")} -{" "}
-                                    {format(education.endDate, "MMM yyyy")}
-                                </p>
+                        // <div
+                        //     key={index}
+                        //     className="p-4 border rounded shadow-sm bg-white border-[#c3dac4]"
+                        // >
+                        //     <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-4">
+                        //         <div className="space-y-2">
+                        //             <h4 className="font-semibold text-sm sm:text-base">{education.school}</h4>
+                        //             <p className="text-xs sm:text-sm text-gray-500">
+                        //                 {education.degree} in {education.major}
+                        //             </p>
+                        //             <p className="text-xs sm:text-sm text-gray-500">
+                        //                 {format(new Date(education.startDate), "MMM yyyy")} -{" "}
+                        //                 {format(new Date(education.endDate), "MMM yyyy")}
+                        //             </p>
+                        //         </div>
+                        //         <div className="flex space-x-2">
+                        //             <Button
+                        //                 variant="ghost"
+                        //                 size="sm"
+                        //                 onClick={() => handleEditEducation(index)}
+                        //             >
+                        //                 <Pencil className="h-4 w-4 text-gray-500" />
+                        //             </Button>
+                        //             <Button
+                        //                 variant="ghost"
+                        //                 size="sm"
+                        //                 onClick={() => handleDeleteEducation(index)}
+                        //                 className="text-red-500 hover:text-red-700"
+                        //             >
+                        //                 ×
+                        //             </Button>
+                        //         </div>
+                        //     </div>
+                        // </div>
+                        <Card key={index} className="p-4">
+                            <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                                <div className="space-y-1 flex-1">
+                                    <h4 className="font-semibold">{education.school}</h4>
+                                    <p className="text-sm text-gray-500">{education.degree} in {education.major}</p>
+                                    <p className="text-xs sm:text-sm text-gray-500">
+                                        {format(new Date(education.startDate), "MMM yyyy")} -{" "}
+                                        {format(new Date(education.endDate), "MMM yyyy")}
+                                     </p>
+                                    
+                                </div>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleEditEducation(index)}
+                                    >
+                                        <Pencil className="h-4 w-4 text-gray-500" />
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleDeleteEducation(index)}
+                                    >
+                                        <X className="h-4 w-4 text-gray-500" />
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
+                        </Card>
                     ))}
                 </div>
             ) : (
@@ -196,18 +295,25 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                 </div>
             )}
 
-
             {/* Action Buttons */}
             <div className="flex justify-end mt-8 pt-4 border-t border-gray-400">
-                {/* <Button variant="outline">Save Draft</Button> */}
-                <Button disabled={loading} type="button" onClick={handleSubmit} className="bg-[#2b4033] hover:bg-[#1e3728] text-white">
-                    {loading ? <PulseLoader size={8} color="#ffffff" /> : <span>
-                        Save <Download className="ml-2 h-4 w-4 inline" />
-                    </span>}
+                <Button
+                    disabled={loading}
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-[#2b4033] hover:bg-[#1e3728] text-white"
+                >
+                    {loading ? (
+                        <PulseLoader size={8} color="#ffffff" />
+                    ) : (
+                        <span>
+                            Save <Download className="ml-2 h-4 w-4 inline" />
+                        </span>
+                    )}
                 </Button>
             </div>
         </TabsContent>
     );
-}
+};
 
 export default EducationInfo;

@@ -28,6 +28,7 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
     const [videoFile, setVideoFile] = useState(null);
     const [errors, setErrors] = useState({});
     const [percentage, setPercentage] = useState(0);
+    
     const [data, setData] = useState({
         about: dataSourceResult.AboutMe ? dataSourceResult.AboutMe : "",
         location: dataSourceResult.Location ? dataSourceResult.Location : "",

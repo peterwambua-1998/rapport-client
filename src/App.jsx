@@ -24,13 +24,6 @@ import IntroductionProfile from "./pages/auth/jobseeker/Profile";
 function App() {
   const { loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="col-span-full text-center">
-        <LoadingSpinner message="" />
-      </div>);
-  }
-
   return (
     <Router>
       <Toaster />

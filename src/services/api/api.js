@@ -364,6 +364,13 @@ export const getCountryByName = (name) => api.get(`/countries/${name}/search`);
 
 // #interviews
 export const getQuestions = () => api.get("/interviews/questions");
+export const storeQuestions = (data) => {
+  return api.post("/interviews/upload-interview", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+};
 
 // Shedule links 
 

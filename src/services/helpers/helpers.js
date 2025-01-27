@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export const getImageUrl = (imagePath) => {
   const SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
 
@@ -11,6 +13,15 @@ export const getImageUrl = (imagePath) => {
 };
 
 export const formatDateTime = (date) => {
+  if (!date)  {
+    return new Date().toLocaleString('en-US', {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
   return new Date(date).toLocaleString('en-US', {
     year: "numeric",
     month: "short",
@@ -20,6 +31,7 @@ export const formatDateTime = (date) => {
   });
 }
 
+// used to determine if user should select data source
 export const validateIntro = async (profileInfo) => {
   const requiredFields = [
     'AboutMe', 'ProfessionalTitle', 'Location', 'Industry', 
@@ -106,3 +118,20 @@ export const validateProfileInfo = async (profileInfo) => {
     message: 'Profile is valid'
   };
 }
+
+// format dates 
+export const formatDate = (dateString) => {
+  if (!dateString) return 'Present';
+  try {
+    return format(new Date(dateString), 'MMM yyyy');
+  } catch (error) {
+    return format(new Date(), 'MMM yyyy');
+  }
+};
+
+
+export const formatTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+};

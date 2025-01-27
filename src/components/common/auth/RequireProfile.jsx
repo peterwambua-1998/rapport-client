@@ -9,8 +9,10 @@ const RequireProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await getSeekerProfile();
-      if (!response.data) {
+
+      const res = await getSeekerProfile();
+      let isValid = validateIntro(res.data.profileInfo)
+      if (isValid == false) {
         navigate('/jobseeker/introduction/profile');
       }
     } catch (err) {
@@ -27,3 +29,24 @@ const RequireProfile = () => {
 };
 
 export default RequireProfile;
+
+const validateIntro = (info) => {
+  const requiredFields = [
+    'AboutMe', 'ProfessionalTitle', 'Location', 'Industry',
+    'YearsofExperience', 'CurrentRole', 'Company', 'Skills', 'videoUrl',
+    'Company', 'Education', 'WorkExperience', 'videoUrl'
+  ];
+
+  let checkForValue = false;
+  requiredFields.forEach(value => {
+    console.log(value)
+    console.log(info[value].length > 0)
+    if (info[value].length > 0 || info[value]) {
+      checkForValue = true;
+    } else {
+      checkForValue = false;
+    }
+  })
+
+  return checkForValue;
+}
