@@ -135,3 +135,29 @@ export const formatTime = (seconds) => {
   const remainingSeconds = seconds % 60;
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
+
+
+export const formatUrl = (url) => {
+  if (!url) return '';
+  
+  // Remove any leading/trailing whitespace
+  url = url.trim();
+  
+  // Check if the URL already has a protocol
+  if (url.match(/^https?:\/\//i)) {
+    return url;
+  }
+  
+  // Check if it's a www. URL
+  if (url.match(/^www\./i)) {
+    return `https://${url}`;
+  }
+  
+  // For LinkedIn-specific URLs
+  if (url.includes('linkedin.com')) {
+    return `https://www.linkedin.com${url.split('linkedin.com')[1]}`;
+  }
+  
+  // Default case: add https://
+  return `https://${url}`;
+};

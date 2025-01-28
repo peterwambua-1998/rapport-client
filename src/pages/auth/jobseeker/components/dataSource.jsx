@@ -112,7 +112,7 @@ const DataSource = ({ setDataSource, setLoading, setDataSourceResult }) => {
                         </CardHeader>
                         <CardFooter>
                             <Dialog>
-                                <DialogTrigger className="bg-[#2b4033] hover:bg-[#1e3728] text-white h-10 px-2 py-1 md:px-4 md:py-2 rounded-md font-medium">
+                                <DialogTrigger className="bg-[#2b4033] text-sm hover:bg-[#1e3728] text-white h-10 px-2 py-1 md:px-4 md:py-2 rounded-md font-medium">
                                     Upload CV
                                 </DialogTrigger>
                                 <DialogContent>

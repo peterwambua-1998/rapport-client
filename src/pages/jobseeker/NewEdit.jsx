@@ -6,51 +6,30 @@ import { UserCircle, Briefcase, Target, BookOpen, Pickaxe, CircleAlert } from 'l
 import { useNavigate } from 'react-router-dom';
 import { FadeLoader } from "react-spinners";
 import { getSeekerProfile } from '@/services/api/api';
-import PersonalInfo from './components/personalInfo';
-import ProfessionalInfo from './components/professionalInfo';
-import SkillsTab from './components/skillsTab';
-import EducationInfo from './components/educationInfo';
-import WorkExperienceInfo from './components/workExperienceInfo';
-import CertificationsTab from './components/certificaionsInfo';
 import { PiCertificateBold } from "react-icons/pi";
-import DataSource from './components/dataSource';
 import ErrorToast from '@/components/toasts/error';
 import { Button } from '@/components/ui/button';
 import { validateIntro } from '@/services/helpers/helpers';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import PersonalInfo from '../auth/jobseeker/components/personalInfo';
+import ProfessionalInfo from '../auth/jobseeker/components/professionalInfo';
+import EducationInfo from '../auth/jobseeker/components/educationInfo';
+import WorkExperienceInfo from '../auth/jobseeker/components/workExperienceInfo';
+import CertificationsTab from '../auth/jobseeker/components/certificaionsInfo';
+import SkillsTab from '../auth/jobseeker/components/skillsTab';
 
-const IntroductionProfile = () => {
+const EditProf = () => {
     const [loadingProfile, setLoadingProfile] = useState(true);
-    const [dataSource, setDataSource] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState("personal");
     const [dataSourceResult, setDataSourceResult] = useState([]);
-    const [completeProfile, setCompleteProfile] = useState(false);
+    const [activeTab, setActiveTab] = useState("personal");
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const requiredFields = [
-                    'AboutMe', 'ProfessionalTitle', 'Location', 'Industry',
-                    'YearsofExperience', 'CurrentRole', 'Company', 'Skills', 'videoUrl', 'CurrentRole',
-                    'Company', 'Education', 'WorkExperience',
-                ];
                 const res = await getSeekerProfile();
-                let finished = await validateIntro(res.data.profileInfo);
-                let info = res.data.profileInfo;
-                let checkForValue = false;
-                requiredFields.forEach(value => {
-                    if (info[value].length > 0) {
-                        checkForValue = true;
-                    }
-                })
-                if (checkForValue) {
-                    setDataSource('resume')
-                }
                 setDataSourceResult(res.data.profileInfo)
                 setLoadingProfile(false);
-                setCompleteProfile(finished.isValid)
             } catch (error) {
                 console.log(error)
                 ErrorToast('Error occurred, kindly refresh and try again!');
@@ -73,28 +52,9 @@ const IntroductionProfile = () => {
     if (loadingProfile) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center">
-                <FadeLoader loading={loading} size={15} color="#abd2ab" />
-                <p className="text-sm mt-4">Checking if we have any of your information...</p>
+                <FadeLoader loading={loadingProfile} size={15} color="#abd2ab" />
+                <p className="text-sm mt-4">Fetching your information.</p>
             </div>
-        );
-    }
-
-    if (loading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center">
-                <FadeLoader loading={loading} size={15} color="#abd2ab" />
-                <p className="text-sm mt-4">Extracting information, please be patient</p>
-            </div>
-        );
-    }
-
-    if (dataSource == null) {
-        return (
-            <DataSource
-                setDataSource={setDataSource}
-                setLoading={setLoading}
-                setDataSourceResult={setDataSourceResult}
-            />
         );
     }
 
@@ -109,29 +69,11 @@ const IntroductionProfile = () => {
                     className="text-center mb-6 sm:mb-8 px-2"
                 >
                     <h1 className="text-2xl sm:text-3xl font-bold text-[#2b4033] mb-2">
-                        Complete Your Professional Profile
+                        Update Your Professional Profile
                     </h1>
                     <p className="text-sm sm:text-base text-gray-600 mb-4">
                         Let's make your profile stand out to employers
                     </p>
-
-                    <Alert className="max-w-full sm:w-[80%] lg:w-[50%] mx-auto mb-4 text-sm sm:text-base">
-                        <CircleAlert className="h-6 w-6 text-[#2b4033]" />
-                        <AlertDescription className="ml-2">
-                            After filling information in each tab, save the data to avoid redoing all over again!
-                        </AlertDescription>
-                    </Alert>
-
-                    {completeProfile && (
-                        <div className="mt-4">
-                            <Button
-                                onClick={() => navigate('/jobseeker/dashboard')}
-                                className="bg-[#2b4033] hover:bg-[#1e3728] text-white text-sm sm:text-base"
-                            >
-                                Proceed To Dashboard
-                            </Button>
-                        </div>
-                    )}
                 </motion.div>
 
                 <motion.div
@@ -202,8 +144,6 @@ const IntroductionProfile = () => {
                                 <CertificationsTab dataSourceResult={dataSourceResult} setActiveTab={setActiveTab} />
                                 <SkillsTab
                                     dataSourceResult={dataSourceResult}
-                                    setCompleteProfile={setCompleteProfile}
-                                    completeProfile={completeProfile}
                                 />
                             </Tabs>
                         </CardContent>
@@ -214,4 +154,4 @@ const IntroductionProfile = () => {
     );
 };
 
-export default IntroductionProfile;
+export default EditProf;

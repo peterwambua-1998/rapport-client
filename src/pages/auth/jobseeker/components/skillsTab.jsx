@@ -29,7 +29,7 @@ import { getSeekerProfile, storeSkillInfo } from '@/services/api/api';
 import { validateProfileInfo } from '@/services/helpers/helpers';
 import { useNavigate } from 'react-router-dom';
 
-const SkillsTab = ({ dataSourceResult, setCompleteProfile, completeProfile }) => {
+const SkillsTab = ({ dataSourceResult, setCompleteProfile = null, completeProfile = null }) => {
     const navigate = useNavigate();
     const [skills, setSkills] = useState(dataSourceResult.Skills.length > 0 ? dataSourceResult.Skills : []);
     const [isOpen, setIsOpen] = useState(false);
@@ -132,7 +132,9 @@ const SkillsTab = ({ dataSourceResult, setCompleteProfile, completeProfile }) =>
 
             let res = await getSeekerProfile();
             let finished = await validateProfileInfo(res.data.profileInfo);
-            setCompleteProfile(finished.isValid)
+            if (setCompleteProfile) {
+                setCompleteProfile(finished.isValid)
+            }
             
         } catch (error) {
             console.log(error);
@@ -282,8 +284,10 @@ const SkillsTab = ({ dataSourceResult, setCompleteProfile, completeProfile }) =>
 
 
             {/* Action Buttons */}
-            <div className="flex justify-between mt-8 pt-4 border-t border-gray-400" >
-                <Button variant="outline" onClick={() => navigate('/jobseeker/dashboard')} disabled={completeProfile == true ? false : true}>Proceed To Dashboard</Button>
+            <div className={`${completeProfile ? 'flex justify-between': 'flex justify-end'} mt-8 pt-4 border-t border-gray-400`} >
+                {completeProfile &&
+                    <Button variant="outline" onClick={() => navigate('/jobseeker/dashboard')} disabled={completeProfile == true ? false : true}>Proceed To Dashboard</Button>
+                }
                 <Button disabled={loading} type="button" onClick={handleSubmit} className="bg-[#2b4033] hover:bg-[#1e3728] text-white">
                     {loading ? <PulseLoader size={8} color="#ffffff" /> : <span>
                         Save  <Download className="ml-2 h-4 w-4 inline" />

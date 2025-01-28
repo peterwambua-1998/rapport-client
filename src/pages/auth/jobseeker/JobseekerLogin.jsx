@@ -112,7 +112,7 @@ const JobseekerLogin = () => {
               {/* LinkedIn button */}
               <button
                 onClick={handleLinkedInLogin}
-                className="w-full py-2.5 px-4 text-white bg-[#346ef1] rounded-lg hover:bg-[#005682] flex items-center justify-center space-x-2 transition-colors"
+                className="w-full py-2.5 px-4 text-white bg-[#0A66C2] rounded-lg hover:bg-[#005682] flex items-center justify-center space-x-2 transition-colors"
               >
                 <FaLinkedin className="text-xl" />
                 <span>Sign in with LinkedIn</span>

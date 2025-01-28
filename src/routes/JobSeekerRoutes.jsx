@@ -14,6 +14,7 @@ import EditProfile from "@/pages/jobseeker/EditProfile";
 import VerifyEmail from "@/pages/auth/jobseeker/JobSeekerVerifyEmail";
 import IntroductionProfile from "@/pages/auth/jobseeker/Profile";
 import DataSource from "@/pages/auth/jobseeker/components/dataSource";
+import EditProf from "@/pages/jobseeker/NewEdit";
 
 const jobseekerRoutes = [
   { path: "/jobseeker/dashboard", element: <Dashboard /> },
@@ -25,7 +26,7 @@ const jobseekerRoutes = [
   { path: "/jobseeker/schedule", element: <Schedule /> },
   { path: "/jobseeker/notifications", element: <Notifications /> },
   { path: "/jobseeker/settings", element: <Settings /> },
-  { path: "/jobseeker/profile", element: <EditProfile /> },
+  { path: "/jobseeker/profile", element: <EditProf /> },
   { path: "/jobseeker/help-center", element: <HelpCenter /> },
 ];
 
