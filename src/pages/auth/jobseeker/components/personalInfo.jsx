@@ -17,6 +17,14 @@ import { PulseLoader } from "react-spinners";
 import { io } from "socket.io-client";
 import VideoRecorder from "./videoRecorder";
 import { getImageUrl } from "@/services/helpers/helpers";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 
 const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
@@ -28,7 +36,7 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
     const [videoFile, setVideoFile] = useState(null);
     const [errors, setErrors] = useState({});
     const [percentage, setPercentage] = useState(0);
-    
+
     const [data, setData] = useState({
         about: dataSourceResult.AboutMe ? dataSourceResult.AboutMe : "",
         location: dataSourceResult.Location ? dataSourceResult.Location : "",
@@ -39,7 +47,6 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
 
 
     useEffect(() => {
-        console.log(dataSourceResult)
         const socket = io(API_BASE_URL, {
             query: { userId: user.id }, // Pass the userId as a query parameter
         });
@@ -69,6 +76,7 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
             location: data.location === "",
             industry: data.industry === "",
             video: data.video === null,
+            profilePicture: data.profilePicture === null
         };
         setErrors(newErrors);
         return !Object.values(newErrors).includes(true);
@@ -86,7 +94,7 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
                 f.append('industry', data.industry)
                 f.append('video', data.video)
                 f.append('profilePicture', data.profilePicture)
-                const res = await storePersonalInfo(f);
+                await storePersonalInfo(f);
                 setActiveTab('professional')
                 setLoading(false);
                 SuccessToast('Your data has been stored. You can continue with other tabs.')
@@ -146,6 +154,9 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
                             ref={fileInputRef}
                         />
                     </div>
+                    {errors.profilePicture &&
+                        <p className="text-red-500 text-sm absolute">Kindly upload profile photo</p>
+                    }
                 </div>
                 <div className="space-y-2">
                     <Label>Introduction Video</Label>
@@ -154,7 +165,7 @@ const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
                     </div>
                     {
                         errors.video && (
-                            <p className="text-red-500 text-sm">Please record an introduction video</p>
+                            <p className="text-red-500 text-sm">Kindly record an introduction video</p>
                         )
                     }
 
@@ -244,17 +255,17 @@ const StatusModal = ({ isOpen, percentage }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-hidden h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                <div className="mt-3 text-center">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 mb-6">
-                        Upload status
-                    </h3>
-                    <Progress value={percentage} />
-                    <p>{percentage}%</p>
-                    <p className="text-sm mt-4">Upload in progress please be patient...</p>
-                </div>
-            </div>
-        </div>
+        <Dialog open={isOpen}>
+            <DialogContent>
+                    <DialogTitle className="text-center">Upload Status</DialogTitle>
+                    <DialogDescription>
+                        <div className="space-y-6 mt-6 text-center">
+                            <Progress value={10} className="h-2 md:h-4" />
+                            <p className="text-base text-gray-600 mt-2">{percentage}%</p>
+                            <p className="text-sm text-gray-600 mt-4">Upload in progress, please be patients...</p>
+                        </div>
+                    </DialogDescription>
+            </DialogContent>
+        </Dialog>
     )
 }

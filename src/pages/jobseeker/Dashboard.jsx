@@ -40,6 +40,7 @@ import interviewThree from "@/assets/video-3.jpg"
 import { format, parseISO } from 'date-fns';
 import { RiPagesFill } from 'react-icons/ri';
 import { MdKeyboardDoubleArrowRight } from 'react-icons/md';
+import RequestTestimonial from './components/RequestTestimonalModal';
 
 
 const Dashboard = () => {
@@ -74,7 +75,7 @@ const Dashboard = () => {
   const analysis = typeof (profile.videoAnalysis) == "string" ? JSON.parse(profile.videoAnalysis) : profile.videoAnalysis;
 
   const profileData = {
-    name: profile.name,
+    name: profile.Name,
     about: profile.AboutMe,
     isVerified: true,
     avatar: profile.profilePhotoUrl,
@@ -120,7 +121,7 @@ const Dashboard = () => {
       website: profile.PortfolioUrl ? profile.PortfolioUrl : 'Not defined',
       github: profile.GithubUrl ? profile.GithubUrl : 'Not defined',
     },
-    videoTestimonials: [],
+    videoTestimonials: profile.testimonials,
     education: profile.Education,
     experience: profile.WorkExperience,
     certifications: profile.Certifications.forEach(cert => {
@@ -258,7 +259,7 @@ const Dashboard = () => {
 
           {/* About Section */}
           <Card className="bg-[#c3dac4] border border-slate-300">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 md:p-4">
               <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">About Me</h2>
               <p className="text-gray-700 text-sm sm:text-base">{profileData.about}</p>
             </CardContent>
@@ -268,7 +269,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* AI Summary Card */}
             <Card className="bg-[#c3dac4] border border-slate-300">
-              <CardContent className="p-4 sm:p-6">
+              <CardContent className="p-4 md:p-4">
                 <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">AI Summary</h2>
                 <div className="space-y-4">
                   <p className="text-gray-700 text-sm sm:text-base">{profileData.aiSummary}</p>
@@ -302,7 +303,7 @@ const Dashboard = () => {
 
             {/* Professional Info Card */}
             <Card className="bg-[#c3dac4] border border-slate-300">
-              <CardContent className="p-4 sm:p-6">
+              <CardContent className="p-4 md:p-4">
                 <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Professional Info</h2>
                 <div className="space-y-3 sm:space-y-4">
                   {[
@@ -318,7 +319,7 @@ const Dashboard = () => {
                     </div>
                   ))}
 
-                  
+
                 </div>
               </CardContent>
             </Card>
@@ -327,7 +328,7 @@ const Dashboard = () => {
           {/* Skills Section */}
           <Tabs
             defaultValue="soft"
-            className="w-full bg-[#c3dac4] border border-slate-300 p-4 sm:p-6 rounded-lg"
+            className="w-full bg-[#c3dac4] border border-slate-300 p-4 md:p-4 rounded-lg"
           >
             <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
               <TabsTrigger value="soft">Soft Skills</TabsTrigger>
@@ -381,7 +382,7 @@ const Dashboard = () => {
 
           {/* Experience Section */}
           <Card className="bg-[#c3dac4] border border-slate-300">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 md:p-4">
               <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Experience</h2>
               <div className="space-y-4">
                 {profileData.experience.map((exp, index) => (
@@ -404,7 +405,7 @@ const Dashboard = () => {
 
           {/* Education */}
           <Card className="bg-[#c3dac4] border border-slate-300">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 md:p-4">
               <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Education</h2>
               <div className="space-y-3 sm:space-y-4">
                 {profileData.education.map((education, index) => (
@@ -424,7 +425,7 @@ const Dashboard = () => {
 
           {/* Career Goals Section */}
           <Card className="bg-[#c3dac4] border border-slate-300">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 md:p-4">
               <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Career Goals</h2>
               <div className="space-y-2 sm:space-y-3">
                 {profileData.careerGoals.map((goal, index) => (
@@ -439,26 +440,21 @@ const Dashboard = () => {
 
           {/* Video Testimonials Section */}
           <Card className="bg-[#c3dac4] border border-slate-300">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 md:p-4">
               <div className="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 className="text-lg font-semibold text-[#2b4033]">Video Testimonials</h2>
-                <Button
-                  className="bg-transparent border-none hover:bg-transparent text-[#2b4033] hover:text-[#1e3728]"
-                  size="sm"
-                >
-                  <CirclePlus strokeWidth={2.5} className="w-4 h-4 sm:w-5 sm:h-5" /> Request new
-                </Button>
+                <RequestTestimonial />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {profileData.videoTestimonials.map((testimonial, index) => (
                   <div key={index} className="space-y-2">
                     <div className="relative h-32 sm:h-40 bg-gray-200 rounded-lg">
-                      <img
-                        src={testimonial.thumbnail}
-                        alt="Testimonial"
-                        className="w-full h-full object-cover rounded-lg"
+                      <video
+                        className="w-full h-full object-cover rounded"
+                        controls
+                        src={getImageUrl(testimonial.video)}
                       />
-                      <Dialog>
+                      {/* <Dialog>
                         <DialogTrigger>
                           <CirclePlay className="absolute inset-0 m-auto w-12 h-12 sm:w-16 sm:h-16 text-[#F1F6FF]" />
                         </DialogTrigger>
@@ -469,27 +465,18 @@ const Dashboard = () => {
                               <video
                                 className="w-full h-full object-cover"
                                 controls
-                                src={testimonial.videoUrl}
+                                src={getImageUrl(testimonial.video)}
                               />
                             </div>
                           </DialogHeader>
                         </DialogContent>
-                      </Dialog>
-                      <div
-                        className={`absolute top-2 right-2 px-2 py-1 text-xs rounded ${testimonial.status === "Approved"
-                            ? "bg-green-500"
-                            : "bg-yellow-500"
-                          } text-white`}
-                      >
-                        {testimonial.status}
-                      </div>
+                      </Dialog> */}
                     </div>
                     <div>
                       <h4 className="font-medium text-sm sm:text-base text-[#2b4033]">
                         {testimonial.name}
                       </h4>
-                      <p className="text-xs sm:text-sm text-gray-700">{testimonial.position}</p>
-                      <p className="text-xs text-gray-500">Recorded {testimonial.recordedDate}</p>
+                      <p className="text-xs text-gray-500">Recorded {testimonial.createdAt}</p>
                     </div>
                   </div>
                 ))}
@@ -502,7 +489,7 @@ const Dashboard = () => {
         <div className="space-y-4 sm:space-y-6">
           {/* Profile Card */}
           <Card className="bg-[#c3dac4] border border-slate-500">
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-4 md:p-4">
               <div className="flex flex-col items-center">
                 <img
                   src={getImageUrl(profileData.avatar)}
@@ -511,14 +498,12 @@ const Dashboard = () => {
                 />
                 <h2 className="text-lg sm:text-xl font-semibold text-[#2b4033]">
                   {profileData.name}
+                  {profileData.isVerified && (
+                    <BadgeCheck strokeWidth={2.5} className="w-4 h-4 inline ml-2 sm:w-5 sm:h-5 text-blue-500" />
+                  )}
                 </h2>
-                {profileData.isVerified && (
-                  <div className="flex items-center space-x-1 mt-1">
-                    <BadgeCheck strokeWidth={2.5} className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-                    <span className="text-xs sm:text-sm text-gray-600">Verified profile</span>
-                  </div>
-                )}
-                <div className="w-full mt-4 sm:mt-6 space-y-2 sm:space-y-3">
+
+                <div className="w-full mt-4 sm:mt-4 space-y-2 sm:space-y-3">
                   <Button
                     onClick={() => navigate("/jobseeker/profile")}
                     className="bg-[#dce2d4] hover:bg-[#c2c8bb] text-black w-full text-sm sm:text-base"
@@ -540,7 +525,7 @@ const Dashboard = () => {
 
           {/* Links Section */}
           <Card className="border border-slate-500">
-            <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+            <CardContent className="p-4 md:p-4 space-y-3 sm:space-y-4">
               <div className="flex flex-row items-center gap-2">
                 <h2 className="text-lg font-semibold text-[#2b4033]">Links</h2>
                 <Link size={14} className="mt-[-2px]" strokeWidth={3} />
@@ -571,13 +556,13 @@ const Dashboard = () => {
 
           {/* Upcoming Interviews Section */}
           <Card className="border border-slate-500">
-            <CardHeader className="flex flex-row items-center justify-between p-4 sm:p-6">
+            <CardHeader className="flex flex-row items-center justify-between p-4 md:p-4">
               <h2 className="text-lg font-semibold text-[#2b4033]">Upcoming Interviews</h2>
               <Button variant="link" className="text-xs sm:text-sm text-[#2b4033]">
                 <ArrowRight className="w-4 h-4" /> View all
               </Button>
             </CardHeader>
-            <CardContent className="px-4 pb-4 sm:px-6 sm:pb-6">
+            <CardContent className="px-4 pb-4 sm:px-6 md:pb-4">
               {profileData.upComingInterviews.length === 0 ? (
                 <div className="border px-2 py-2 rounded bg-[#c3dac4]">
                   <p className="text-sm sm:text-base text-gray-800">

@@ -90,7 +90,7 @@ const ProfessionalInfo = ({ dataSourceResult, setActiveTab }) => {
                     <Label>Current Role</Label>
                     <Input
                         className="border-slate-400"
-                        placeholder="e.g. Senior Developer"
+                        placeholder="Eg: Senior Developer"
                         value={data.currentRole}
                         onChange={(e) => handleInputChange("currentRole", e.target.value)}
                     />
@@ -130,7 +130,7 @@ const ProfessionalInfo = ({ dataSourceResult, setActiveTab }) => {
                     <Label>Portfolio</Label>
                     <Input
                         className="border-slate-400"
-                        placeholder="Portfolio URL"
+                        placeholder="Eg: https://yourwebsite.com"
                         value={data.portfolio}
                         onChange={(e) => handleInputChange("portfolio", e.target.value)}
                     />

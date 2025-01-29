@@ -60,6 +60,7 @@ const IntroductionProfile = () => {
         fetchProfile();
     }, []);
 
+
     // Animation variants
     const containerVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -73,7 +74,7 @@ const IntroductionProfile = () => {
     if (loadingProfile) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center">
-                <FadeLoader loading={loading} size={15} color="#abd2ab" />
+                <FadeLoader loading={loading} size={15} color="#2b4033" />
                 <p className="text-sm mt-4">Checking if we have any of your information...</p>
             </div>
         );
@@ -82,7 +83,7 @@ const IntroductionProfile = () => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center">
-                <FadeLoader loading={loading} size={15} color="#abd2ab" />
+                <FadeLoader loading={loading} size={15} color="#2b4033" />
                 <p className="text-sm mt-4">Extracting information, please be patient</p>
             </div>
         );

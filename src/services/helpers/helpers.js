@@ -59,6 +59,32 @@ export const validateIntro = async (profileInfo) => {
 
 }
 
+
+export const validateEducation = (educationData) => {
+  const arrayValidations = [
+    { 
+      field: 'Education', 
+      validate: (items) => items.length > 0 && 
+        items.every(item => 
+          item.school && item.degree && item.major && 
+          item.startDate && item.endDate
+        )
+    },
+  ]
+
+  if (!arrayValidations[0].validate(profileInfo[validation.field])) {
+    return {
+      isValid: false,
+      missingFields: [validation.field],
+      message: `Invalid or empty ${validation.field}`
+    };
+  }
+
+  for (const validation of arrayValidations) {
+    
+  }
+}
+
 export const validateProfileInfo = async (profileInfo) => {
   const requiredFields = [
     'AboutMe', 'ProfessionalTitle', 'Location', 'Industry', 

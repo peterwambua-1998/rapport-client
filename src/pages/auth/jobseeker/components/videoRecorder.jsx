@@ -90,7 +90,7 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
         <>
             <Button
                 onClick={() => setIsModalOpen(true)}
-                className=" bg-[#94a48c] hover:bg-[#7e8b77] text-black/70"
+                className=" bg-[#A02334] hover:bg-[#8a1e2c] text-white"
             >
                 <Camera strokeWidth={2.4} className="mr-2" /> Record Video
             </Button>

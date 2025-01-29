@@ -80,8 +80,7 @@ function VerifyEmail() {
         ErrorToast("Invalid or expired verification link.");
       }
     } catch (err) {
-      ErrorToast(err.response?.data?.message || err.message || "Verification failed, please try again.");
-      navigate(`/jobseeker/register`);
+      ErrorToast(err.response?.data || err.message || "Verification failed, please try again.");
     }
   };
 

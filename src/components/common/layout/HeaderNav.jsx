@@ -96,7 +96,7 @@ const HeaderNav = () => {
 
   const jobseekerNavItems = [
     { to: "/jobseeker/dashboard", icon: FaHome, label: "Home" },
-    { to: "/jobseeker/interview-prep", icon: FaLightbulb, label: "Interviews" },
+    { to: "/jobseeker/interview-prep", icon: FaLightbulb, label: "Interview-Prep" },
     { to: "/jobseeker/job-matches", icon: FaHandshake, label: "Challenges" },
     { to: "/jobseeker/messages", icon: IoChatbubblesSharp, label: "Messaging" },
     { to: "/jobseeker/notifications", icon: FaBell, label: "Notifications" },

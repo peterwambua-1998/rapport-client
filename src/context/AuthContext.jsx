@@ -25,9 +25,6 @@ export const AuthProvider = ({ children }) => {
     const validateToken = async () => {
       try {
         const userData = await getCurrentUser();
-        console.log("userData=====");
-        console.log(userData);
-        
         if (userData.data.user) {
           setUser(userData.data.user);
         }
@@ -69,30 +66,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const linkedInLogin = async () => {
-    try {
-      const response = await apiLinkedInLogIn();
-      const { user } = response.data;
-      setUser(user);
-      return user;
-    } catch (error) {
-      console.error("Login failed:", error);
-      throw error;
-    }
-  };
+  
 
-  const register = async (userData) => {
-    try {
-      const response = await apiRegister(userData);
-      const { user } = response.data;
-      setUser(user);
-      return user;
-    } catch (error) {
-      console.log(error)
-      console.error("Registration failed:", error);
-      throw error;
-    }
-  };
 
   const logout = () => {
     const userRole = user.role;
@@ -103,11 +78,9 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     login,
-    register,
     logout,
     isAuthenticated: !!user,
     loading,
-    linkedInLogin,
     refresh
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

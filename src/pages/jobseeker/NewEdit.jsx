@@ -62,6 +62,7 @@ const EditProf = () => {
         <div className="min-h-screen bg-white py-6 sm:py-8">
             <div className="container mx-auto max-w-7xl px-4">
                 {/* Header Section */}
+                <Button className="bg-[#2b4033] hover:bg-[#1e3728] text-white" onClick={() => navigate('/jobseeker/dashboard')}>Cancel</Button>
                 <motion.div
                     initial="hidden"
                     animate="visible"

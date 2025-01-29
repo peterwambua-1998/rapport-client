@@ -22,6 +22,7 @@ import RecruiterForgotPassoword from "../pages/auth/recruiter/RecruiterForgotPas
 import RecruiterResetPassword from "../pages/auth/recruiter/RecruiterResetPassword";
 import RecruiterVerifyEmail from "../pages/auth/recruiter/RecruiterVerifyEmail";
 import SetNewPassword from "@/pages/auth/jobseeker/JobSeekerSetNewPassword";
+import VideoTestimonial from "@/pages/jobseeker/VideoTestimonial";
 
 const PublicRoutes = [
   { path: "/", element: <Home />, key: "home" },
@@ -98,6 +99,11 @@ const PublicRoutes = [
     element: <RecruiterVerifyEmail />,
     key: "recruiter-login",
   },
+  {
+    path: "/jobseeker/testimonial/:token", 
+    element: <VideoTestimonial />,
+    key: 'testimonial'
+  }
 ];
 
 export default PublicRoutes;

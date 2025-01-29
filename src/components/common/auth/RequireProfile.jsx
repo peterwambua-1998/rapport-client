@@ -39,8 +39,6 @@ const validateIntro = (info) => {
 
   let checkForValue = false;
   requiredFields.forEach(value => {
-    console.log(value)
-    console.log(info[value].length > 0)
     if (info[value].length > 0 || info[value]) {
       checkForValue = true;
     } else {

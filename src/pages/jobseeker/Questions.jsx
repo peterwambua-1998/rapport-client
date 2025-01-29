@@ -81,10 +81,6 @@ const VideoInterview = ({ chosenQuestions, endProcess }) => {
       const formData = new FormData();
       formData.append("video", file);
       formData.append("questions", JSON.stringify(questions));
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
       // Simulated API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const res = await storeQuestions(formData);

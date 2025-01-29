@@ -100,6 +100,24 @@ export const getSeekerProfile = () => api.get("/auth/profile/job-seeker");
  * Data source routes
  */
 
+
+
+/**
+ * Testimonial routes
+ */
+export const storeTestimonialRequest = (data) => api.post('/testimonial/request', data);
+export const storeTestimonialVideo = (data) => {
+  return api.post(`/testimonial/video`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+/**
+ * Testimonial routes
+ */
+
+
 export const changePassword = (data) => api.put("/auth/change-password", data);
 
 export const linkedInLogin = (role) => {
@@ -371,6 +389,7 @@ export const storeQuestions = (data) => {
     },
   })
 };
+export const getResults = () => api.get("/interviews/results");
 
 // Shedule links 
 

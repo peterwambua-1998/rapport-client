@@ -132,10 +132,8 @@ const SkillsTab = ({ dataSourceResult, setCompleteProfile = null, completeProfil
 
             let res = await getSeekerProfile();
             let finished = await validateProfileInfo(res.data.profileInfo);
-            if (setCompleteProfile) {
-                setCompleteProfile(finished.isValid)
-            }
-            
+            setCompleteProfile(finished.isValid)
+
         } catch (error) {
             console.log(error);
             setLoading(false);
@@ -174,7 +172,7 @@ const SkillsTab = ({ dataSourceResult, setCompleteProfile = null, completeProfil
                                 }
                             </DialogDescription>
                         </DialogHeader>
-                        <div  className="space-y-4" >
+                        <div className="space-y-4" >
                             <div className="space-y-2" >
                                 <Label htmlFor="skillName" > Skill Name </Label>
                                 <Input
@@ -284,7 +282,7 @@ const SkillsTab = ({ dataSourceResult, setCompleteProfile = null, completeProfil
 
 
             {/* Action Buttons */}
-            <div className={`${completeProfile ? 'flex justify-between': 'flex justify-end'} mt-8 pt-4 border-t border-gray-400`} >
+            <div className={`${completeProfile ? 'flex justify-between' : 'flex justify-end'} mt-8 pt-4 border-t border-gray-400`} >
                 {completeProfile &&
                     <Button variant="outline" onClick={() => navigate('/jobseeker/dashboard')} disabled={completeProfile == true ? false : true}>Proceed To Dashboard</Button>
                 }
