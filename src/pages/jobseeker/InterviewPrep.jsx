@@ -76,7 +76,7 @@ const InterviewPrep = () => {
   };
 
   useEffect(() => {
-    const fetchResults =  async () => {
+    const fetchResults = async () => {
       try {
         const res = await getResults();
         setResults(res.data);
@@ -94,9 +94,9 @@ const InterviewPrep = () => {
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
-      <div className="grid grid-cols-1 md:grid-cols-4">
-        <div className="max-w-4xl mx-auto col-span-1 md:col-span-3">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#2b4033] mb-4 sm:mb-6 md:mb-8 text-center">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-6xl col-span-1 md:col-span-3">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#2b4033] mb-4 sm:mb-6 md:mb-8">
             Interview Preparation Guide
           </h1>
 
@@ -168,7 +168,7 @@ const InterviewPrep = () => {
           </div>
 
           {questions.length > 0 && (
-            <div className="bg-white rounded-lg p-4 sm:p-6 md:p-8">
+            <div className="bg-[#edeeed] rounded-lg p-4 sm:p-6 md:p-8">
               <h2 className="text-xl sm:text-2xl md:text-3xl text-[#34495e] font-semibold mb-3 sm:mb-4">
                 Your Profile-Matched Questions
               </h2>
@@ -202,23 +202,42 @@ const InterviewPrep = () => {
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#2b4033] mb-4 sm:mb-6">
             Past Interviews
           </h2>
-          <ScrollArea className="h-[calc(100vh-200px)] rounded-lg border p-4">
+          <ScrollArea className="h-[calc(100vh-100px)] rounded-lg border p-4">
             {results.length > 0 ? (
               results.map((result) => (
-                <div
-                  key={result.id}
-                  className="bg-[#f5f5f5] rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <h3 className="text-lg font-semibold text-[#34495e]">
-                    {new Date(result.createdAt).toLocaleDateString()}
-                  </h3>
-                  <p className="text-sm text-gray-600 mt-2">
-                    <span className="font-medium">Grade:</span> {result.grade}/100
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    <span className="font-medium">Feedback:</span> {result.feedback}
-                  </p>
+                <div>
+                  <div
+                    key={result.id}
+                    className="bg-[#f5f5f5] rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <h3 className="text-lg font-semibold text-[#34495e]">
+                      {new Date(result.createdAt).toLocaleDateString()}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-2">
+                      <span className="font-medium">Grade:</span> {result.grade}/100
+                    </p>
+                    <p className="text-sm text-gray-600 mt-2">
+                      <span className="font-medium">Feedback:</span> {result.feedback}
+                    </p>
+                  </div>
+                  <div
+                    key={result.id}
+                    className="bg-[#f5f5f5] rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <h3 className="text-lg font-semibold text-[#34495e]">
+                      {new Date(result.createdAt).toLocaleDateString()}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-2">
+                      <span className="font-medium">Grade:</span> {result.grade}/100
+                    </p>
+                    <p className="text-sm text-gray-600 mt-2">
+                      <span className="font-medium">Feedback:</span> {result.feedback}
+                    </p>
+                  </div>
                 </div>
+
+
+
               ))
             ) : (
               <p className="text-sm text-gray-600">No past interviews found.</p>
