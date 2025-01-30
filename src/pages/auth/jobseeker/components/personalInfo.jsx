@@ -260,7 +260,7 @@ const StatusModal = ({ isOpen, percentage }) => {
                     <DialogTitle className="text-center">Upload Status</DialogTitle>
                     <DialogDescription>
                         <div className="space-y-6 mt-6 text-center">
-                            <Progress value={10} className="h-2 md:h-4" />
+                            <Progress value={percentage} className="h-2 md:h-4" />
                             <p className="text-base text-gray-600 mt-2">{percentage}%</p>
                             <p className="text-sm text-gray-600 mt-4">Upload in progress, please be patients...</p>
                         </div>

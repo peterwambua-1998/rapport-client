@@ -44,7 +44,7 @@ const HeaderItem = ({ to, Icon, label, isMobile = false }) => {
   return (
     <NavLink
       to={to}
-      className={`flex items-center gap-2 px-4 py-2 hover:text-[#2b4033] ${location.pathname === to ? 'text-[#59695f]' : 'text-black'
+      className={`flex items-center  px-4 py-2 hover:text-[#2b4033] ${location.pathname === to ? 'text-[#59695f]' : 'text-black'
         } ${isMobile ? 'w-full' : 'flex-col'
         }`}
     >

@@ -184,7 +184,7 @@ const Dashboard = () => {
           </div>
 
           {/* Video Section */}
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-8 gap-4 sm:gap-6">
             <Card className="border border-slate-500 md:col-span-2">
               <CardHeader className="p-3 sm:p-4">
                 <h2 className="text-base font-semibold text-[#2b4033]">
@@ -202,10 +202,10 @@ const Dashboard = () => {
                   ].map((item, index) => (
                     <div key={index} className="border border-slate-300 px-3 sm:px-4 py-2 rounded bg-[#acc8ac]">
                       <p>
-                        <span className="text-base sm:text-lg font-semibold">
+                        <span className="text-base md:text-base font-semibold">
                           {item.value}{" "}
                         </span>{" "}
-                        {item.label}
+                        <span className='text-xs'>{item.label}</span>
                       </p>
                     </div>
                   ))}
@@ -214,10 +214,10 @@ const Dashboard = () => {
             </Card>
 
             {/* Video Player */}
-            <div className="md:col-span-5">
+            <div className="md:col-span-6">
               <div>
                 <div
-                  className="relative h-[30vh] sm:h-[40vh] md:h-[57vh] rounded-t-lg bg-gray-200"
+                  className="relative h-[30vh] md:h-[49vh] rounded-t-lg bg-gray-200"
                   style={{
                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")`,
                     backgroundSize: 'cover',
@@ -441,8 +441,8 @@ const Dashboard = () => {
           {/* Video Testimonials Section */}
           <Card className="bg-[#c3dac4] border border-slate-300">
             <CardContent className="p-4 md:p-4">
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h2 className="text-lg font-semibold text-[#2b4033]">Video Testimonials</h2>
+              <div className="md:flex md:items-center md:justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg font-semibold md:mb-3 mb-1 text-[#2b4033]">Video Testimonials</h2>
                 <RequestTestimonial />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -494,7 +494,7 @@ const Dashboard = () => {
                 <img
                   src={getImageUrl(profileData.avatar)}
                   alt="Profile"
-                  className="rounded-lg mb-3 sm:mb-4 w-32 sm:w-40"
+                  className="rounded-lg mb-3 sm:mb-4 w-40 md:w-[20vw]"
                 />
                 <h2 className="text-lg sm:text-xl font-semibold text-[#2b4033]">
                   {profileData.name}
@@ -556,13 +556,13 @@ const Dashboard = () => {
 
           {/* Upcoming Interviews Section */}
           <Card className="border border-slate-500">
-            <CardHeader className="flex flex-row items-center justify-between p-4 md:p-4">
+            <CardHeader className="p-4 md:p-4">
               <h2 className="text-lg font-semibold text-[#2b4033]">Upcoming Interviews</h2>
-              <Button variant="link" className="text-xs sm:text-sm text-[#2b4033]">
-                <ArrowRight className="w-4 h-4" /> View all
-              </Button>
+              <p className="text-xs font-medium sm:text-sm text-[#2b4033]">
+                 View all <ArrowRight className="w-4 h-4 inline" />
+              </p>
             </CardHeader>
-            <CardContent className="px-4 pb-4 sm:px-6 md:pb-4">
+            <CardContent className="px-4 pb-4 md:pb-4">
               {profileData.upComingInterviews.length === 0 ? (
                 <div className="border px-2 py-2 rounded bg-[#c3dac4]">
                   <p className="text-sm sm:text-base text-gray-800">
@@ -570,7 +570,7 @@ const Dashboard = () => {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3 sm:space-y-4">
+                <div className="space-y-3">
                   {profileData.upComingInterviews.map((interview, index) => (
                     <div key={index} className="border px-2 py-2 rounded bg-[#c3dac4]">
                       <h3 className="font-medium text-sm sm:text-base">{interview.position}</h3>

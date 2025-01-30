@@ -72,7 +72,7 @@ const RequestTestimonial = () => {
             <Dialog open={isOpen} onOpenChange={handleModalClose}>
                 <DialogTrigger asChild>
                     <Button
-                        className="bg-transparent border-none hover:bg-transparent text-[#2b4033] hover:text-[#1e3728]"
+                        className="p-0 bg-transparent border-none hover:bg-transparent text-[#2b4033] hover:text-[#1e3728]"
                         size="sm"
                     >
                         <CirclePlus strokeWidth={2.5} className="w-4 h-4 sm:w-5 sm:h-5" /> Request new

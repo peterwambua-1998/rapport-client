@@ -124,7 +124,7 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
                                     {!isRecording &&
                                         <div className="absolute top-[16vh] left-[4vw] prose prose-gray">
                                             <p className='text-'>You are required to record a <span className='text-red-600'>10-minute (Maximum)</span> career video articulating the following:</p>
-                                            <ul className='text-sm marker:text-[#546154]'>
+                                            <ul className='text-sm marker:text-[#546154] list-decimal'>
                                                 <li>Technical skills: Specific job-related abilities and expertise.</li>
                                                 <li>Soft skills: Personality traits, interpersonal skills, and other non-technical attributes (e.g., communication, leadership, teamwork).</li>
                                                 <li>Past experience: Details about your previous roles and responsibilities.</li>

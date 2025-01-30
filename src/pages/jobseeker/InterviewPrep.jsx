@@ -22,9 +22,11 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Check, Award } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 const InterviewPrep = () => {
   const navigate = useNavigate();
@@ -153,7 +155,7 @@ const InterviewPrep = () => {
               <Button
                 disabled={loading}
                 onClick={generateQuestions}
-                className="bg-[#949894] hover:bg-[#858885] w-full sm:w-auto text-sm sm:text-base md:text-lg"
+                className="bg-[#546154] hover:bg-[#475447] w-full sm:w-auto text-sm sm:text-base md:text-lg"
               >
                 {loading ? (
                   <PulseLoader size={8} color="#ffffff" />
@@ -219,25 +221,31 @@ const InterviewPrep = () => {
                     <p className="text-sm text-gray-600 mt-2">
                       <span className="font-medium">Feedback:</span> {result.feedback}
                     </p>
-                  </div>
-                  <div
-                    key={result.id}
-                    className="bg-[#f5f5f5] rounded-lg p-4 mb-4 shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <h3 className="text-lg font-semibold text-[#34495e]">
-                      {new Date(result.createdAt).toLocaleDateString()}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-2">
-                      <span className="font-medium">Grade:</span> {result.grade}/100
-                    </p>
-                    <p className="text-sm text-gray-600 mt-2">
-                      <span className="font-medium">Feedback:</span> {result.feedback}
-                    </p>
+                    <Dialog>
+                      <DialogTrigger>
+                        <Button size="sm" className="mt-4 bg-[#2b4033] hover:bg-[#1e3728] text-white">Show Questions</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-[90vw] overflow-auto max-h-[90vh] md:max-w-[700px] lg:max-w-[800px] xl:max-w-[900px]">
+                        <DialogHeader>
+                          <DialogTitle>Interview Questions</DialogTitle>
+                            <div className="p-2 ">
+                              <ul className="text-sm marker:text-[#546154] list-decimal space-y-4">
+                                {result.questions.split('?,').map((qtn, i) => (
+                                  <li key={i}>{qtn}</li>
+                                ))}
+                              </ul>
+                              <Separator className="my-4" />
+                              <div>
+                                <p className="text-sm text-gray-600 mt-2">
+                                  <span className="font-medium">Grade:</span> {result.grade}/100
+                                </p>
+                              </div>
+                            </div>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
-
-
-
               ))
             ) : (
               <p className="text-sm text-gray-600">No past interviews found.</p>
