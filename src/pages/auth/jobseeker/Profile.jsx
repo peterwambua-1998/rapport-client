@@ -60,6 +60,20 @@ const IntroductionProfile = () => {
         fetchProfile();
     }, []);
 
+    useEffect(() => {
+        const checkValid = async () => {
+            try {
+                const res = await getSeekerProfile();
+                let finished = await validateIntro(res.data.profileInfo);
+                setCompleteProfile(finished.isValid)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        checkValid();
+    }, [activeTab])
+
 
     // Animation variants
     const containerVariants = {

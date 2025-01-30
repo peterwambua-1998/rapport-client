@@ -76,6 +76,7 @@ const Dashboard = () => {
 
   const profileData = {
     name: profile.Name,
+    title: profile.ProfessionalTitle,
     about: profile.AboutMe,
     isVerified: true,
     avatar: profile.profilePhotoUrl,
@@ -502,6 +503,7 @@ const Dashboard = () => {
                     <BadgeCheck strokeWidth={2.5} className="w-4 h-4 inline ml-2 sm:w-5 sm:h-5 text-blue-500" />
                   )}
                 </h2>
+                <p className='text-gray-700 text-sm'>{profileData.title}</p>
 
                 <div className="w-full mt-4 sm:mt-4 space-y-2 sm:space-y-3">
                   <Button
