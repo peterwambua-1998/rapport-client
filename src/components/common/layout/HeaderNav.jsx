@@ -49,7 +49,7 @@ const HeaderItem = ({ to, Icon, label, isMobile = false }) => {
         }`}
     >
       <Icon />
-      <span className={`${isMobile ? 'text-base' : 'text-sm'}`}>{label}</span>
+      <span className={`${isMobile ? 'text-base font-medium' : 'text-sm font-medium'}`}>{label}</span>
     </NavLink>
   );
 };
