@@ -26,7 +26,7 @@ import SuccessToast from '@/components/toasts/success';
 import ErrorToast from '@/components/toasts/error';
 import { PulseLoader } from 'react-spinners';
 import { getSeekerProfile, storeSkillInfo } from '@/services/api/api';
-import { validateProfileInfo } from '@/services/helpers/helpers';
+import { validateIntro, validateProfileInfo } from '@/services/helpers/helpers';
 import { useNavigate } from 'react-router-dom';
 
 const SkillsTab = ({ dataSourceResult, setCompleteProfile = null, completeProfile = null }) => {
@@ -131,7 +131,7 @@ const SkillsTab = ({ dataSourceResult, setCompleteProfile = null, completeProfil
             SuccessToast('Your data has been stored. You can continue with other tabs.')
 
             let res = await getSeekerProfile();
-            let finished = await validateProfileInfo(res.data.profileInfo);
+            let finished = await validateIntro(res.data.profileInfo);
             setCompleteProfile(finished.isValid)
 
         } catch (error) {
