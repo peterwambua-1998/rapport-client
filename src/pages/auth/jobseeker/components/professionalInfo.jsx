@@ -63,7 +63,7 @@ const ProfessionalInfo = ({ dataSourceResult, setActiveTab }) => {
                     <Input
                         value={data.professionalTitle}
                         onChange={(e) => handleInputChange("professionalTitle", e.target.value)}
-                        placeholder="Eg: Dr"
+                        placeholder="Eg: Software Engineer"
                         className="bg-white border-slate-400"
                     />
                     {errors.professionalTitle && (
