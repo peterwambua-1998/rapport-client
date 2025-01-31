@@ -117,6 +117,17 @@ export const storeTestimonialVideo = (data) => {
  * Testimonial routes
  */
 
+/**
+ * Preferences routes
+ */
+export const getPreferences = () => api.get('/users/get/preferences');
+export const storePreferences = (data) => api.post('/users/store/preferences', data);
+export const storeFeedback = (data) => api.post('/users/job-seeker/feedback/store', data);
+
+/**
+ * Preferences routes
+ */
+
 
 export const changePassword = (data) => api.put("/auth/change-password", data);
 

@@ -26,6 +26,10 @@ import {
 import { BellRing, LockKeyhole, MessageSquareText, UserPen } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import PreferencesSettings from './components/PreferencesSettings';
+import ResetPassword from './components/resetPassword';
+import NotificationSettings from './components/NotificationSettings';
+import FeedBack from './components/Feedback';
 
 const ProjectSettings = () => {
   const [currentPasswordVisible, setCurrentPasswordVisible] = useState(false);
@@ -71,170 +75,13 @@ const ProjectSettings = () => {
               </TabsList>
 
               <div className="flex-1 lg:pl-6">
-                <TabsContent value="password" className="mt-0 lg:mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl md:text-2xl">Password Reset</CardTitle>
-                      <CardDescription className="hidden sm:block">
-                        Change your password here. After saving, you'll be logged out.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="current-password">Current Password</Label>
-                        <div className="relative">
-                          <Input type={currentPasswordVisible ? "text" : "password"} id="current-password" />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setCurrentPasswordVisible(!currentPasswordVisible);
-                            }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                          >
-                            {currentPasswordVisible ? (
-                              <FaEyeSlash size={18} />
-                            ) : (
-                              <FaEye size={18} />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="new-password">New Password</Label>
-                        <div className="relative">
-                          <Input type={passwordVisible ? "text" : "password"} id="new-password" />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setPasswordVisible(!passwordVisible);
-                            }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                          >
-                            {passwordVisible ? (
-                              <FaEyeSlash size={18} />
-                            ) : (
-                              <FaEye size={18} />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirm-password">Confirm New Password</Label>
-                        <div className="relative">
-                          <Input type={cPasswordVisible ? "text" : "password"} id="confirm-password" />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setCPasswordVisible(!cPasswordVisible);
-                            }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                          >
-                            {cPasswordVisible ? (
-                              <FaEyeSlash size={18} />
-                            ) : (
-                              <FaEye size={18} />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <Button className="w-full sm:w-auto bg-[#2b4033] hover:bg-[#acc8ac]">
-                        Update Password
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                <ResetPassword />
 
-                <TabsContent value="preferences" className="mt-0 lg:mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl md:text-2xl">Profile Preferences</CardTitle>
-                      <CardDescription className="hidden sm:block">
-                        Manage your profile visibility and display settings.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <Label>Profile Visible</Label>
-                        <Switch />
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <Label>Profile Active Status</Label>
-                        <Switch />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Profile Page Background Color</Label>
-                        <Input type="color" value="#47664d" />
-                      </div>
-                      <Separator className="my-4" />
-                      <div className="space-y-4">
-                        <h2 className='mb-4 text-xl md:text-2xl font-semibold leading-none tracking-tight' >Profile Sections Visibility</h2>
+                <PreferencesSettings />
 
-                        {['Skills', 'Education', 'Experience', 'Professional Information', 'Career Goals'].map((section) => (
-                          <div key={section} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <Label>{section} Visible</Label>
-                            <Switch />
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                <NotificationSettings />
 
-                <TabsContent value="notifications" className="mt-0 lg:mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl md:text-2xl">Notifications</CardTitle>
-                      <CardDescription className="hidden sm:block">
-                        Manage your notification preferences.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <Label>When a recruiter views your profile</Label>
-                        <Switch />
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <Label>Releases</Label>
-                        <Switch />
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <Label>Promotions</Label>
-                        <Switch />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="contact" className="mt-0 lg:mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl md:text-2xl">Contact Us</CardTitle>
-                      <CardDescription className="hidden sm:block">
-                        Send us a message and we'll get back to you as soon as possible.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <textarea
-                          id="message"
-                          className="w-full min-h-[150px] rounded-md border border-[#dce2d4] p-2"
-                        />
-                      </div>
-                      <Button className="w-full sm:w-auto bg-[#2b4033] hover:bg-[#acc8ac]">
-                        Send Message
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                <FeedBack />
               </div>
             </div>
           </Tabs>

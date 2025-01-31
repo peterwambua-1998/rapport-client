@@ -66,7 +66,8 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Roboto", serif;
+    /* font-family: "Roboto", serif; */
+    font-family: "Inter", serif;
     font-optical-sizing: auto;
   }
 }
