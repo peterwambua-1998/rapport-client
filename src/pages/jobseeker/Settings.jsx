@@ -27,7 +27,7 @@ import { BellRing, LockKeyhole, MessageSquareText, UserPen } from 'lucide-react'
 import { Separator } from '@/components/ui/separator';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import PreferencesSettings from './components/PreferencesSettings';
-import ResetPassword from './components/resetPassword';
+import ResetPassword from './components/ResetPassword';
 import NotificationSettings from './components/NotificationSettings';
 import FeedBack from './components/Feedback';
 
