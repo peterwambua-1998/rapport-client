@@ -105,15 +105,14 @@ const HeaderNav = () => {
   const adminNavItems = [
     { to: "/admin/dashboard", icon: FaTachometerAlt, label: "Dashboard" },
     { to: "/admin/companies", icon: FaBriefcase, label: "Companies" },
-    { to: "/admin/recruiters", icon: FaUserTie, label: "Recruiters" },
-    { to: "/admin/job-seekers", icon: FaUser, label: "Job Seekers" },
+    // { to: "/admin/recruiters", icon: FaUserTie, label: "Recruiters" },
+    // { to: "/admin/job-seekers", icon: FaUser, label: "Job Seekers" },
     { to: "/admin/users", icon: FaUsers, label: "Users" },
-    { to: "/admin/profile-settings", icon: FaTools, label: "Profile Settings" },
-    { to: "/admin/features", icon: FaRocket, label: "Features" },
-    { to: "/admin/plans", icon: FaClipboardList, label: "Plans" },
+    // { to: "/admin/profile-settings", icon: FaTools, label: "Profile Settings" },
     { to: "/admin/payments", icon: FaMoneyBillWave, label: "Payments" },
     { to: "/admin/notifications", icon: FaBell, label: "Notifications" },
-    { to: "/admin/settings", icon: FaCogs, label: "Settings" },
+    { to: "/admin/youtube/authorization", icon: FaBell, label: "YouTube" },
+    // { to: "/admin/settings", icon: FaCogs, label: "Settings" },
   ];
 
   const recruiterNavItems = [

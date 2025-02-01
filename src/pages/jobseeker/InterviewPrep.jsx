@@ -98,19 +98,19 @@ const InterviewPrep = () => {
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="max-w-6xl col-span-1 md:col-span-3">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#2b4033] mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-xl md:text-2xl font-bold text-[#2b4033] mb-4 sm:mb-6 md:mb-8">
             Interview Preparation Guide
           </h1>
 
           {/* Video Interview Tips Section */}
           <div className="bg-[#c3dac4] rounded-lg p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 md:mb-8 border border-slate-300">
-            <h2 className="text-xl sm:text-2xl md:text-3xl text-[#34495e] mb-3 sm:mb-4">
+            <h2 className="text-lg md:text-xl font-semibold text-[#2b4033] mb-3 sm:mb-4">
               <FaVideo className="mr-2 inline" />
               Video Interview Tips
             </h2>
             <ul className="space-y-2 sm:space-y-3">
               {interviewTips.map((tip, index) => (
-                <li key={index} className="flex items-center text-gray-700 text-sm sm:text-base md:text-lg">
+                <li key={index} className="flex items-center text-gray-700 text-xs md:text-base">
                   <FaCheckCircle className="text-green-500 mr-2" />
                   {tip}
                 </li>
@@ -120,24 +120,24 @@ const InterviewPrep = () => {
 
           {/* Interview Requirements Section */}
           <div className="bg-[#c3dac4] rounded-lg p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 md:mb-8 border border-slate-300">
-            <h2 className="text-xl sm:text-2xl md:text-3xl text-[#34495e] mb-3 sm:mb-4">
+            <h2 className="text-lg md:text-xl font-semibold text-[#2b4033] mb-3 sm:mb-4">
               <FaInfoCircle className="mr-2 inline" />
               Interview Requirements
             </h2>
             <ul className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
-              <li className="text-gray-700 text-sm sm:text-base md:text-lg">
-                <FaClock className="text-[#3498db] mr-2 inline" />
+              <li className="flex items-center text-gray-700 text-xs md:text-base">
+                <FaClock className="text-[#3498db] mr-2" />
                 Each answer should be 1-2 minutes long
               </li>
-              <li className="text-gray-700 text-sm sm:text-base md:text-lg">
+              <li className="flex items-center text-gray-700 text-xs md:text-base">
                 <FaHourglassEnd className="inline text-[#3498db] mr-2" />
                 Total interview time should not exceed 7 minutes
               </li>
-              <li className="text-red-600 text-sm sm:text-base md:text-lg">
+              <li className="text-red-600 flex items-center text-xs md:text-base">
                 <FaExclamationTriangle className="mr-2 inline" />
                 You must select and save a set of questions before proceeding
               </li>
-              <li className="text-gray-700 text-sm sm:text-base md:text-lg">
+              <li className="flex items-center text-gray-700 text-xs md:text-base">
                 <FaUserCheck className="inline text-[#3498db] mr-2" />
                 Questions are tailored to your profile information
               </li>
@@ -171,13 +171,13 @@ const InterviewPrep = () => {
 
           {questions.length > 0 && (
             <div className="bg-[#edeeed] rounded-lg p-4 sm:p-6 md:p-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl text-[#34495e] font-semibold mb-3 sm:mb-4">
+              <h2 className="text-lg md:text-xl font-semibold text-[#2b4033] mb-3 sm:mb-4">
                 Your Profile-Matched Questions
               </h2>
-              <p className="mb-3 sm:mb-4 text-sm sm:text-base md:text-lg">Select six questions to proceed</p>
+              <p className="mb-3 sm:mb-4 text-sm sm:text-base md:text-base text-gray-700">Select six questions to proceed</p>
               <ul className="space-y-2 sm:space-y-3">
                 {questions.map((question, index) => (
-                  <li key={index} className="flex items-center gap-3 sm:gap-4 text-sm sm:text-base md:text-lg">
+                  <li key={index} className="flex items-center gap-3 sm:gap-4 text-xs md:text-sm">
                     <input
                       type="checkbox"
                       checked={qtnChosen.includes(question)}

@@ -20,28 +20,23 @@ import EducationLevel from "../pages/admin/EducationLevel";
 import SkillLevel from "../pages/admin/SkillLevel";
 import YearsOfExperience from "../pages/admin/YearsOfExperience";
 import Company from "@/pages/admin/Company";
+import YouTubeAuthorization from "@/pages/admin/YoutubeAuth";
 
 
 const AdminRoutes = [
   { path: "/admin/dashboard", element: <Dashboard /> },
   { path: "/admin/companies", element: <Company /> },
-  { path: "/admin/recruiters", element: <Recruiters /> },
-  { path: "/admin/job-seekers", element: <Jobseekers /> },
+  // { path: "/admin/recruiters", element: <Recruiters /> },
+  // { path: "/admin/job-seekers", element: <Jobseekers /> },
   { path: "/admin/users", element: <Users /> },
-  { path: "/admin/skills", element: <Skills /> },
-  { path: "/admin/features", element: <Features /> },
-  { path: "/admin/plans", element: <Plans /> },
-  { path: "/admin/subscriptions", element: <Subscriptions /> },
   { path: "/admin/invoices", element: <Invoices /> },
   { path: "/admin/payments", element: <Payments /> },
   { path: "/admin/notifications", element: <Notifications /> },
-  { path: "/admin/settings", element: <Settings /> },
+  // { path: "/admin/settings", element: <Settings /> },
   { path: "/admin/profile", element: <Profile /> },
   { path: "/admin/profile-settings", element: <ProjectSettings /> },
-  { path: "/admin/industry", element: <Industry /> },
-  { path: "/admin/education-level", element: <EducationLevel /> },
-  { path: "/admin/skill-levels", element: <SkillLevel /> },
-  { path: "/admin/experience-duration", element: <YearsOfExperience /> },
+  { path: "/admin/youtube/authorization", element: <YouTubeAuthorization /> },
+ 
 ];
 
 export default AdminRoutes;

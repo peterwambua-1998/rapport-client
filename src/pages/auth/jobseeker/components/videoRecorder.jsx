@@ -6,7 +6,7 @@ import { getImageUrl } from '@/services/helpers/helpers';
 
 const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
     const [isRecording, setIsRecording] = useState(false);
-    const [oldVid, setOldVid] =  useState(prevVideo)
+    const [oldVid, setOldVid] = useState(prevVideo)
     const [videoBlob, setVideoBlob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [recordingTime, setRecordingTime] = useState(0);
@@ -26,7 +26,7 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
     const startRecording = async () => {
         try {
             setOldVid(null);
-            
+
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: { width: { ideal: 1280 }, height: { ideal: 720 } },
                 audio: true
@@ -85,7 +85,7 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
         setIsVisible(true);
         setRecordingTime(0)
     }
-    
+
     return (
         <>
             <Button
@@ -107,7 +107,7 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
 
                         <div className="p-6">
                             <h2 className="text-xl font-bold mb-4">Record Your Video</h2>
-                            {(!isRecording && oldVid != null) && 
+                            {(!isRecording && oldVid != null) &&
                                 <video
                                     src={getImageUrl(prevVideo)}
                                     controls
@@ -150,6 +150,7 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
                             ) : null}
 
                             <div className="flex justify-center space-x-4">
+
                                 {!isRecording && !videoBlob ? (
                                     <Button
                                         onClick={startRecording}
@@ -170,7 +171,10 @@ const VideoRecorder = ({ onStopRecording, prevVideo = null }) => {
                                 ) : null}
 
                                 {videoBlob ? (
-                                    <div>
+                                    <div className='flex items-center gap-4'>
+                                        <Button className="bg-[#2b4033] hover:bg-[#1e3728] text-white "  onClick={() => setIsModalOpen(false)}>
+                                            Upload Video
+                                        </Button>
                                         <Button
                                             onClick={removeVideo}
                                             variant="destructive"

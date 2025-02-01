@@ -90,25 +90,26 @@ const PreferencesSettings = () => {
         <TabsContent value="preferences" className="mt-0 lg:mt-0">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl md:text-2xl">Profile Preferences</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl text-[#2b4033]">Profile Preferences</CardTitle>
                     <CardDescription className="hidden sm:block">
                         Manage your profile visibility and display settings.
                     </CardDescription>
                 </CardHeader>
                 <CardContent >
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <Label>Profile Visible</Label>
-                            <Switch
-                                checked={formData.profileVisible}
-                                onCheckedChange={handleSwitchChange('profileVisible')}
-                            />
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <Label>Profile Active Status</Label>
+                            <Label>Profile Public (Public profile will be viewed by recruiters)</Label>
                             <Switch
                                 checked={formData.profileActiveStatus}
                                 onCheckedChange={handleSwitchChange('profileActiveStatus')}
+                            />
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <Label>Profile Active (Active profile signifies your open for projects/jobs)</Label>
+                            <Switch
+                                checked={formData.profileVisible}
+                                onCheckedChange={handleSwitchChange('profileVisible')}
                             />
                         </div>
                         <div className="space-y-2">
@@ -121,7 +122,7 @@ const PreferencesSettings = () => {
                         </div>
                         <Separator className="my-4" />
                         <div className="space-y-4">
-                            <h2 className="mb-4 text-xl md:text-2xl font-semibold leading-none tracking-tight">
+                            <h2 className="text-[#2b4033] mb-4 text-xl md:text-2xl font-semibold leading-none tracking-tight">
                                 Profile Sections Visibility
                             </h2>
                             {['Skills', 'Education', 'Experience', 'Professional Information', 'Career Goals'].map((section) => (

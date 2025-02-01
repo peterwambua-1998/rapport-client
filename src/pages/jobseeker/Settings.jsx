@@ -40,7 +40,7 @@ const ProjectSettings = () => {
     <div className="min-h-screen bg-[#edeeed] p-2 sm:p-4 md:p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl border">
         <div className="p-2 sm:p-4 md:p-6">
-          <h2 className='mb-4 text-xl md:text-2xl font-semibold leading-none tracking-tight' >Settings</h2>
+          <h2 className='mb-4 text-xl md:text-2xl font-semibold leading-none tracking-tight text-[#2b4033]' >Settings</h2>
           <Tabs defaultValue="password" className="flex-1" orientation="vertical">
             <div className="flex flex-col lg:flex-row gap-4">
               <TabsList className="border-b-0 flex lg:flex-col h-auto lg:h-[70vh] w-full lg:w-64 lg:gap-4 lg:items-start lg:justify-start space-y-0 lg:space-y-1 space-x-2 lg:space-x-0 bg-[#c3dac4] p-2 lg:pt-4 rounded-lg overflow-x-auto lg:overflow-x-visible">

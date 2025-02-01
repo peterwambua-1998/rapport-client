@@ -11,8 +11,9 @@ const RequireProfile = () => {
     try {
 
       const res = await getSeekerProfile();
-      let isValid = validateIntro(res.data.profileInfo)
-      if (isValid == false) {
+      let isValid = await validateIntro(res.data.profileInfo)
+      console.log(isValid);
+      if (isValid.isValid == false) {
         navigate('/jobseeker/introduction/profile');
       }
     } catch (err) {
@@ -30,21 +31,28 @@ const RequireProfile = () => {
 
 export default RequireProfile;
 
-const validateIntro = (info) => {
+const validateIntro = async (profileInfo) => {
   const requiredFields = [
-    'AboutMe', 'ProfessionalTitle', 'Location', 'Industry',
-    'YearsofExperience', 'CurrentRole', 'Company', 'Skills', 'videoUrl',
-    'Company', 'Education', 'WorkExperience', 'videoUrl'
+    'AboutMe', 'ProfessionalTitle', 'Location', 'Industry', 
+    'YearsofExperience', 'CurrentRole', 'Company', 'Skills', 'videoUrl', 'CurrentRole',
+    'Company', 'Education', 'WorkExperience',
   ];
 
-  let checkForValue = false;
-  requiredFields.forEach(value => {
-    if (info[value].length > 0 || info[value]) {
-      checkForValue = true;
-    } else {
-      checkForValue = false;
-    }
-  })
+  const missingFields = requiredFields.filter(field => 
+    !profileInfo[field] || profileInfo[field] === '' || profileInfo[field].length == 0
+  );
 
-  return checkForValue;
+  if (missingFields.length > 0) {
+    return {
+      isValid: false,
+      missingFields,
+      message: `Missing required fields: ${missingFields.join(', ')}`
+    };
+  }
+
+  return {
+    isValid: true,
+    missingFields: null,
+    message: 'Profile is valid'
+  };
 }

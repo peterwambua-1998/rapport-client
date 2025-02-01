@@ -49,7 +49,7 @@ const FeedBack = () => {
         <TabsContent value="contact" className="mt-0 lg:mt-0">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl md:text-2xl">Contact Us</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl text-[#2b4033]">Contact Us</CardTitle>
                     <CardDescription className="hidden sm:block">
                         Send us a message and we'll get back to you as soon as possible.
                     </CardDescription>

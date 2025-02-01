@@ -107,8 +107,9 @@ const Dashboard = () => {
     }),
     videoLastViewed: "2024-03-20",
     daysSinceUpload: 95,
-    isActive: true,
-    isPublic: true,
+    // profile.preference.activeStatus
+    isActive: profile.preference.activeStatus,
+    isPublic: profile.preference.profileVisible,
     aiSummary: analysis.summary,
     aiHighlights: analysis.highlights,
     aiRecommendations: analysis.recommendations,
@@ -125,12 +126,7 @@ const Dashboard = () => {
     videoTestimonials: profile.testimonials,
     education: profile.Education,
     experience: profile.WorkExperience,
-    certifications: profile.Certifications.forEach(cert => {
-      return {
-        name: cert.name,
-        issuer: cert.organization,
-      }
-    }),
+    certifications: profile.Certifications.map((cert) => ({ name: cert.name, issuer: cert.organization })),
     careerGoals: analysis.careerGoals,
     links: {
       linkedIn: profile.LinkedInProfileUrl ? profile.LinkedInProfileUrl : null,
@@ -165,21 +161,21 @@ const Dashboard = () => {
             <div className="flex flex-wrap gap-2">
               <Badge
                 variant="secondary"
-                className={`${profileData.isActive
-                  ? "bg-[#22C55E] text-white border border-[#166534]"
-                  : "bg-red-100 text-red-800"
-                  }`}
-              >
-                {profileData.isActive ? "Active" : "Inactive"}
-              </Badge>
-              <Badge
-                variant="secondary"
                 className={`${profileData.isPublic
                   ? "bg-[#E0E2E5] text-black border border-[#606062]"
-                  : "bg-gray-100 text-gray-800 border border-[#606062]"
+                  : "bg-yellow-100 text-yellow-800 border border-yellow-800"
                   }`}
               >
                 {profileData.isPublic ? "Public" : "Private"}
+              </Badge>
+              <Badge
+                variant="secondary"
+                className={`${profileData.isActive
+                  ? "bg-green-100 text-green-800 border border-[#166534]"
+                  : "bg-red-100 text-red-800 border border-red-800"
+                  }`}
+              >
+                {profileData.isActive ? "Active" : "Inactive"}
               </Badge>
             </div>
           </div>
@@ -424,18 +420,44 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
+          {/* Certifications Section */}
+          <Card className="bg-[#c3dac4] border border-slate-300">
+            <CardContent className="p-4 md:p-4">
+              <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Certifications</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2">
+                {profileData.certifications.map((cert, index) => (
+                  <Card key={index} className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div>
+                          <div className="font-medium">{cert.name}</div>
+                          <div className="text-sm text-gray-500">{cert.issuer}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Career Goals Section */}
           <Card className="bg-[#c3dac4] border border-slate-300">
             <CardContent className="p-4 md:p-4">
               <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Career Goals</h2>
-              <div className="space-y-2 sm:space-y-3">
-                {profileData.careerGoals.map((goal, index) => (
-                  <div className="flex items-center space-x-2" key={index}>
-                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
-                    <span className="text-sm sm:text-base text-gray-700">{goal.name}</span>
-                  </div>
-                ))}
-              </div>
+              {profileData.careerGoals.length == 0 ?
+                <div>
+                  <p className='text-black/50 text-xs md:text-sm'>You do not have any testimonials currently.</p>
+                </div>
+                :
+                <div className="space-y-2 sm:space-y-3">
+                  {profileData.careerGoals.map((goal, index) => (
+                    <div className="flex items-center space-x-2" key={index}>
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                      <span className="text-sm sm:text-base text-gray-700">{goal.name}</span>
+                    </div>
+                  ))}
+                </div>}
             </CardContent>
           </Card>
 
@@ -446,42 +468,34 @@ const Dashboard = () => {
                 <h2 className="text-lg font-semibold md:mb-3 mb-1 text-[#2b4033]">Video Testimonials</h2>
                 <RequestTestimonial />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {profileData.videoTestimonials.map((testimonial, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="relative h-32 sm:h-40 bg-gray-200 rounded-lg">
-                      <video
-                        className="w-full h-full object-cover rounded"
-                        controls
-                        src={getImageUrl(testimonial.video)}
-                      />
-                      {/* <Dialog>
-                        <DialogTrigger>
-                          <CirclePlay className="absolute inset-0 m-auto w-12 h-12 sm:w-16 sm:h-16 text-[#F1F6FF]" />
-                        </DialogTrigger>
-                        <DialogContent className="max-w-[95vw] md:max-w-[80vw] lg:max-w-[70vw]">
-                          <DialogHeader>
-                            <DialogTitle className="text-[#2b4033]">Video</DialogTitle>
-                            <div>
-                              <video
-                                className="w-full h-full object-cover"
-                                controls
-                                src={getImageUrl(testimonial.video)}
-                              />
-                            </div>
-                          </DialogHeader>
-                        </DialogContent>
-                      </Dialog> */}
+              {profileData.videoTestimonials.length == 0 &&
+                <div className='mt-[-20px]'>
+                  <p className='text-black/50 text-xs md:text-sm'>You do not have any testimonials currently.</p>
+                </div>
+              }
+              {profileData.videoTestimonials.length > 0 &&
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                  {profileData.videoTestimonials.map((testimonial, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="relative h-32 sm:h-40 bg-gray-200 rounded-lg">
+                        <video
+                          className="w-full h-full object-cover rounded"
+                          controls
+                          src={getImageUrl(testimonial.video)}
+                        />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm sm:text-base text-[#2b4033]">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-xs text-gray-500">Recorded {testimonial.createdAt}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-medium text-sm sm:text-base text-[#2b4033]">
-                        {testimonial.name}
-                      </h4>
-                      <p className="text-xs text-gray-500">Recorded {testimonial.createdAt}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+
+                </div>
+              }
+
             </CardContent>
           </Card>
         </div>
@@ -561,14 +575,14 @@ const Dashboard = () => {
             <CardHeader className="p-4 md:p-4">
               <h2 className="text-lg font-semibold text-[#2b4033]">Upcoming Interviews</h2>
               <p className="text-xs font-medium sm:text-sm text-[#2b4033]">
-                 View all <ArrowRight className="w-4 h-4 inline" />
+                View all <ArrowRight className="w-4 h-4 inline" />
               </p>
             </CardHeader>
             <CardContent className="px-4 pb-4 md:pb-4">
               {profileData.upComingInterviews.length === 0 ? (
                 <div className="border px-2 py-2 rounded bg-[#c3dac4]">
-                  <p className="text-sm sm:text-base text-gray-800">
-                    You do not have any upcoming interviews yet.
+                  <p className="text-black/50 text-xs md:text-sm">
+                    You currently do not have any upcoming interviews.
                   </p>
                 </div>
               ) : (

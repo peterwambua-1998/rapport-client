@@ -26,7 +26,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
-
 const PersonalInfo = ({ dataSourceResult, setActiveTab }) => {
     const API_BASE_URL = import.meta.env.VITE_APP_SERVER_URL;
     const { user } = useAuth();

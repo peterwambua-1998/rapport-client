@@ -78,7 +78,7 @@ const ResetPassword = () => {
         <TabsContent value="password" className="mt-0 lg:mt-0">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl md:text-2xl">Password Reset</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl text-[#2b4033]">Password Reset</CardTitle>
                     <CardDescription className="hidden sm:block">
                         Change your password here. After saving, you'll be logged out.
                     </CardDescription>

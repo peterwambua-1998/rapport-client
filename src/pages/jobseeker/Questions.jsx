@@ -9,7 +9,7 @@ import { formatTime } from "@/services/helpers/helpers";
 import { PulseLoader } from "react-spinners";
 
 const VideoInterview = ({ chosenQuestions, endProcess }) => {
-  const MAX_RECORDING_TIME = 120;
+  const MAX_RECORDING_TIME = 420;
   const [recording, setRecording] = useState(false);
   const [videoBlob, setVideoBlob] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);

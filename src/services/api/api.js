@@ -128,6 +128,12 @@ export const storeFeedback = (data) => api.post('/users/job-seeker/feedback/stor
  * Preferences routes
  */
 
+/**
+ * Youtube auth
+ */
+export const authYouTube = () => {
+  window.location.href = `${API_BASE_URL}/api/auth/youtube/authorize`;
+}
 
 export const changePassword = (data) => api.put("/auth/change-password", data);
 

@@ -57,7 +57,7 @@ const NotificationSettings = () => {
         <TabsContent value="notifications" className="mt-0 lg:mt-0">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-xl md:text-2xl">Notifications</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl text-[#2b4033]">Notifications</CardTitle>
                     <CardDescription className="hidden sm:block">
                         Manage your notification preferences.
                     </CardDescription>
