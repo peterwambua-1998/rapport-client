@@ -129,11 +129,15 @@ export const storeFeedback = (data) => api.post('/users/job-seeker/feedback/stor
  */
 
 /**
- * Youtube auth
+ * Youtube 
  */
 export const authYouTube = () => {
   window.location.href = `${API_BASE_URL}/api/auth/youtube/authorize`;
 }
+export const getYouTube = () => api.get('/auth/check/youtube');
+/**
+ * Youtube
+ */
 
 export const changePassword = (data) => api.put("/auth/change-password", data);
 
