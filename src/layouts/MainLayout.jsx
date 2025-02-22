@@ -8,9 +8,9 @@ const MainLayout = () => {
   return (
     <div className="h-screen w-[100vw] flex overflow-hidden bg-white ">
       {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
-      <div className="overflow-y-auto w-full">
+      <div className="no-scrollbar md:yes-scrollbar overflow-y-auto w-full">
         <DashboardHeader setSidebarOpen={setSidebarOpen} />
-        <main className="flex-1 relative overflow-y-auto focus:outline-none">
+        <main className="flex-1 relative no-scrollbar  focus:outline-none">
           {/* <div className="py-2">
             <div className="mx-auto px-1 md:px-2"> */}
               <Outlet /> {/* Render nested routes */}

@@ -1,336 +1,144 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "@/hooks/useAuth";
-import {
-  createCompany,
-  getCompanies,
-  getCountries,
-} from "@/services/api/api";
-import CreateCompanyModal from "@/components/recruiter/Company/CreateCompanyModal";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import logo from '@/assets/images/logo.png'
-import { getImageUrl } from "@/services/helpers/helpers";
-import { PasswordStrength } from "@/components/common/auth/PasswordStrength";
-import ErrorToast from "@/components/toasts/error";
-import { PulseLoader } from "react-spinners";
-import HeaderNav from "../header/header";
+import bannerOne from '@/assets/images/banner-1.webp'
+import { PasswordStrength } from '@/components/common/auth/PasswordStrength';
+import ErrorToast from '@/components/toasts/error';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import useAuth from '@/hooks/useAuth';
+import { linkedInLogin, registerJobSeeker } from '@/services/api/api';
+import { useState } from 'react';
+import { FaLinkedin, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { PulseLoader } from 'react-spinners';
 
-export default function RegisterRecruiterPage() {
-  const { register } = useAuth();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    companyName: "",
-    country: "United States",
-    company: "",
-    companyId: "",
-    role: "Recruiter",
-    password: "",
-    confirmPassword: "",
+const RegisterRecruiterPage = () => {
+
+  const [errors, setErrors] = useState({
+    fName: false,
+    lName: false,
+    email: false,
+    phone: false,
+    password: false,
+    confirmPassword: false,
   });
-  const [error, setError] = useState("");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [allCompanies, setAllCompanies] = useState([]);
-  const [allCountries, setAllCountries] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isValid, setIsValid] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-  const [showCompanyInput, setShowCompanyInput] = useState(false);
-
-  const fetchAllCompanies = async () => {
+  const handleLinkedInLogin = async () => {
     try {
-      const companies = await getCompanies();
-      setAllCompanies(companies.data.data);
-    } catch (err) {
-      ErrorToast("Error fetching companies:");
-    }
-  };
-
-  const fetchAllCountries = async () => {
-    try {
-      const countries = await getCountries();
-      setAllCountries(countries.data.data);
-    } catch (err) {
-      ErrorToast("Error fetching countries...");
-    }
-  };
-
-
-  useEffect(() => {
-    fetchAllCountries();
-    fetchAllCompanies();
-  }, []);
-
-  useEffect(() => {
-    if (searchTerm) {
-      setSearchResults(
-        allCompanies.filter((company) =>
-          company.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchTerm, allCompanies]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      ErrorToast("Passwords do not match");
-      setLoading(false)
-      return;
-    }
-
-    setError("");
-
-    try {
-      await register({ ...formData, type: "recruiter" });
-      navigate("/recruiter/dashboard");
+      linkedInLogin("job_seeker");
     } catch (error) {
-      ErrorToast("Registration failed. Please try again.");
-      setLoading(false)
-    }
-  };
-
-  const handleCreateCompany = async (companyData) => {
-    setError("");
-    try {
-      await createCompany(companyData);
-      closeModal();
-      fetchAllCompanies();
-    } catch (error) {
-      // setError("Registration failed. Please try again.");
-      ErrorToast("company registration failed. Please try again.")
+      console.log(error);
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name !== "") {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
-  const handleSearchChange = (e) => {
-    const searchValue = e.target.value;
-    setSearchTerm(searchValue); // Update the search term in real-time
-    setFormData((prev) => ({
-      ...prev,
-      company: searchValue, // Reflect the searched term in the form data
-    }));
-  };
+  const submitData = async (e) => {
+    e.preventDefault();
+    try {
 
-  const handleCompanySelect = (company) => {
-    setSearchTerm(""); // Clear the search input but keep the selected company visible
-    setFormData((prev) => ({
-      ...prev,
-      company: company.name, // Update the form with the selected company's name
-      companyId: company.id, // Store the selected company's ID
-    }));
-    setSearchResults([]); // Clear the dropdown
+
+    } catch (error) {
+      ErrorToast(error.response?.data?.error || "Registration failed. Please try again.");
+    }
   };
 
   return (
-    <div>
-      <HeaderNav />
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 text-center mt-2 mb-6">
-            Create your recruiter account
-          </h1>
-          {error && <p className="text-center text-red-500">{error}</p>}
-          <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* First Name and Last Name */}
-              <div className="flex gap-4">
-                <div className="w-1/2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    defaultValue={formData.firstName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="w-1/2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    defaultValue={formData.lastName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Email */}
+    <div className='min-h-screen bg-white'>
+      <div className='grid lg:grid-cols-2 md:grid-cols-1'>
+        <div
+          className='hidden md:block bg-cover bg-no-repeat bg-center min-h-screen'
+          style={{ backgroundImage: `url('${bannerOne}')` }}
+        />
+        <div className='p-4 min-h-screen'>
+          <div className='p-4 '>
+            <div className='w-full max-w-2xl bg-[#c3dac4] p-6 rounded-lg mx-4'>
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  name="email"
-                  defaultValue={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+                <h3 className='text-xl font-bold text-center mb-6'>Sign up</h3>
 
-              {/* Company Name */}
-              <div>
-                <Label htmlFor="companyName">Company Name</Label>
-                <Input
-                  id="companyName"
-                  type="text"
-                  name="companyName"
-                  onChange={handleChange}
-                  defaultValue={formData.companyName}
-                  placeholder="Optional"
-
-                />
-              </div>
-
-              {/* Country */}
-              <div>
-                <Label htmlFor="country">Country</Label>
-                <select
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-md bg-white text-sm"
-                  required
+                <button
+                  onClick={handleLinkedInLogin}
+                  className="w-full py-3 px-4 text-white bg-[#0A66C2] rounded-lg hover:bg-[#005682] flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <option value="United States">United States</option>
-                </select>
-              </div>
+                  <FaLinkedin className="text-xl" />
+                  <span>Sign in with LinkedIn</span>
+                </button>
 
-              {/* Company Search */}
-              <div className="relative">
-                <div className="flex items-center justify-between gap-2">
-                  <Label htmlFor="company">Company</Label>
-                  <Button
-                    type="button"
-                    variant="link"
-                    onClick={openModal}
-                    className="text-blue-600 text-sm"
-                  >
-                    Create New Company
-                  </Button>
+                <div className="flex items-center justify-center my-6">
+                  <span className="w-full border-b border-slate-400"></span>
+                  <span className="px-4 text-sm text-gray-500 bg-[#c3dac4]">or</span>
+                  <span className="w-full border-b border-slate-400"></span>
                 </div>
-                <Input
-                  id="company"
-                  placeholder="Search for company..."
-                  value={formData.company || searchTerm}
-                  onChange={handleSearchChange}
-                  autoComplete="off"
-                />
 
-                {searchTerm && searchResults.length > 0 && (
-                  <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
-                    {searchResults.map((company) => (
-                      <li
-                        key={company.id}
-                        onClick={() => handleCompanySelect(company)}
-                        className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
-                      >
-                        <img
-                          src={company?.logo ? getImageUrl(company.logo) : ""}
-                          alt={`${company.name} logo`}
-                          className="w-6 h-6 object-contain rounded"
-                        />
-                        <span>{company.name}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <form onSubmit={submitData} className="space-y-4 not-prose">
 
-                <input type="hidden" name="companyId" value={formData.companyId} />
+                  <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4'>
+                    <div>
+                      <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
+                      <Input
+                        id="firstName"
+                        placeholder="Enter first name"
+                        type="text"
+                        name="fName"
+                        defaultValue={''}
+                        onChange={handleChange}
+                        className="w-full mt-1 bg-white border-slate-400 rounded-lg"
+                      />
+                      {errors.fName && (
+                        <p className="mt-1 text-red-500 text-sm">First name is required.</p>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="lName" className="text-sm font-medium">Last Name</Label>
+                      <Input
+                        id="lName"
+                        placeholder="Enter last name"
+                        type="text"
+                        name="lName"
+                        defaultValue={''}
+                        onChange={handleChange}
+                        className="w-full mt-1 bg-white border-slate-400 rounded-lg"
+                      />
+                      {errors.lName && (
+                        <p className="mt-1 text-red-500 text-sm">Last name is required.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className='grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4'>
+                    <div>
+                      <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
+                      <Input
+                        id="firstName"
+                        placeholder="Enter first name"
+                        type="text"
+                        name="fName"
+                        defaultValue={''}
+                        onChange={handleChange}
+                        className="w-full mt-1 bg-white border-slate-400 rounded-lg"
+                      />
+                      {errors.fName && (
+                        <p className="mt-1 text-red-500 text-sm">First name is required.</p>
+                      )}
+                    </div>
+                  </div>
+
+                </form>
               </div>
-
-
-              <div>
-                <Label htmlFor="country">Role</Label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="w-full px-2 py-1.5 border border-gray-200 rounded-md bg-white text-sm"
-                  required
-                >
-                  <option value="Recruiter">Recruiter</option>
-                  <option value="HR Professional">HR Professional</option>
-                  <option value="Hiring Manager">Hiring Manager</option>
-                </select>
-              </div>
-
-
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  name="password"
-                  required
-                  defaultValue={formData.password}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  name="confirmPassword"
-                  defaultValue={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <PasswordStrength password={formData.password} setIsValid={setIsValid} />
-
-              {/* Submit Button */}
-              <div>
-                <Button
-                  type="submit"
-                  disabled={!isValid}
-                  className="w-full font-bold bg-blue-700 hover:bg-blue-700"
-                  onClick={() => setLoading(true)}
-                >
-                  {loading ? <PulseLoader size={8} color="#ffffff" /> : "next"}
-
-                </Button>
-              </div>
-            </form>
-            <p className="mt-4 text-sm text-center text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="/recruiter/login"
-                className="text-blue-500 hover:text-blue-800"
-              >
-                Sign in
-              </Link>
-            </p>
+            </div>
           </div>
         </div>
-
-        <CreateCompanyModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onSubmit={handleCreateCompany}
-          company={[]}
-        />
       </div>
     </div>
   );
-} 
+}
+
+export default RegisterRecruiterPage;

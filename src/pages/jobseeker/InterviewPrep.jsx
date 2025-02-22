@@ -169,7 +169,7 @@ const InterviewPrep = () => {
             </div>
           </div>
 
-          {questions.length > 0 && (
+          {questions.length > 0 ? (
             <div className="bg-[#edeeed] rounded-lg p-4 sm:p-6 md:p-8">
               <h2 className="text-lg md:text-xl font-semibold text-[#2b4033] mb-3 sm:mb-4">
                 Your Profile-Matched Questions
@@ -189,7 +189,7 @@ const InterviewPrep = () => {
                 ))}
               </ul>
             </div>
-          )}
+          ) : <></>}
 
           <Button
             onClick={startInterview}
@@ -216,31 +216,50 @@ const InterviewPrep = () => {
                       {new Date(result.createdAt).toLocaleDateString()}
                     </h3>
                     <p className="text-sm text-gray-600 mt-2">
-                      <span className="font-medium">Grade:</span> {result.grade}/100
+                      <span className="font-medium">Grade:</span> {result.videoAnalysis.overallGrade}/100
                     </p>
-                    <p className="text-sm text-gray-600 mt-2">
-                      <span className="font-medium">Feedback:</span> {result.feedback}
-                    </p>
+
                     <Dialog>
                       <DialogTrigger>
-                        <Button size="sm" className="mt-4 bg-[#2b4033] hover:bg-[#1e3728] text-white">Show Questions</Button>
+                        <Button size="sm" className="mt-4 bg-[#2b4033] hover:bg-[#1e3728] text-white">Show Results</Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-[90vw] overflow-auto max-h-[90vh] md:max-w-[700px] lg:max-w-[800px] xl:max-w-[900px]">
                         <DialogHeader>
-                          <DialogTitle>Interview Questions</DialogTitle>
-                            <div className="p-2 ">
-                              <ul className="text-sm marker:text-[#546154] list-decimal space-y-4">
-                                {result.questions.split('?,').map((qtn, i) => (
-                                  <li key={i}>{qtn}</li>
+                          <DialogTitle>Interview Results</DialogTitle>
+                          <ScrollArea className="w-full h-[300px] sm:h-[360px]">
+                            <div className="p-4">
+                              <div className="text-sm marker:text-[#546154] space-y-4">
+                                {result.videoAnalysis.results.map((qtn, index) => (
+                                  <div
+                                    key={index}
+                                    className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-2"
+                                  >
+                                    <div>
+                                      <span className="font-medium text-gray-600 text-sm">
+                                        Q{index + 1}:
+                                      </span>
+                                      <p className="mt-1 text-sm ">{qtn.question}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <span className="font-medium text-gray-600 text-sm">Grade:</span> 
+                                      <p>{qtn.grade} / 100</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <span className="font-medium text-gray-600 text-sm">Feedback:</span> 
+                                      <p> {qtn.feedback}</p>
+                                    </div>
+                                  </div>
                                 ))}
-                              </ul>
-                              <Separator className="my-4" />
-                              <div>
-                                <p className="text-sm text-gray-600 mt-2">
-                                  <span className="font-medium">Grade:</span> {result.grade}/100
-                                </p>
+
                               </div>
                             </div>
+                          </ScrollArea>
+                          <Separator className="my-4" />
+                          <div>
+                            <p className="text-sm text-gray-600 mt-2">
+                              <span className="font-medium">Grade:</span> {result.videoAnalysis.overallGrade}/100
+                            </p>
+                          </div>
                         </DialogHeader>
                       </DialogContent>
                     </Dialog>
@@ -252,7 +271,7 @@ const InterviewPrep = () => {
             )}
           </ScrollArea>
         </div>
-      </div>
+      </div >
 
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -277,7 +296,7 @@ const InterviewPrep = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

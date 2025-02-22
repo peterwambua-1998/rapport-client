@@ -182,7 +182,7 @@ const Dashboard = () => {
 
           {/* Video Section */}
           <div className="grid grid-cols-1 md:grid-cols-8 gap-4 sm:gap-6">
-            <Card className="border border-slate-500 md:col-span-2">
+            <Card className="border border-slate-400/80 md:col-span-2">
               <CardHeader className="p-3 sm:p-4">
                 <h2 className="text-base font-semibold text-[#2b4033]">
                   Platform Activity
@@ -195,11 +195,11 @@ const Dashboard = () => {
                     { label: "Search Appearance", value: profileData.searchAppearance },
                     { label: "Interviews Completed", value: profileData.interviewsCompleted },
                     { label: "Challenges Completed", value: profileData.challengesCompleted },
-                    { label: "Days On The Platform", value: profileData.daysOnPlatform }
+                    { label: "Days On Platform", value: profileData.daysOnPlatform }
                   ].map((item, index) => (
-                    <div key={index} className="border border-slate-300 px-3 sm:px-4 py-2 rounded bg-[#acc8ac]">
+                    <div key={index} className="border border-gray-400 px-3 sm:px-4 py-2 rounded bg-[#acc8ac]">
                       <p>
-                        <span className="text-base md:text-base font-semibold">
+                        <span className="text-sm md:text-sm font-semibold">
                           {item.value}{" "}
                         </span>{" "}
                         <span className='text-xs'>{item.label}</span>
@@ -214,7 +214,7 @@ const Dashboard = () => {
             <div className="md:col-span-6">
               <div>
                 <div
-                  className="relative h-[30vh] md:h-[49vh] rounded-t-lg bg-gray-200"
+                  className="relative h-[30vh] md:h-[53vh] rounded-t-lg bg-gray-200"
                   style={{
                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.527), rgba(0, 0, 0, 0.5)), url("${videoImg}")`,
                     backgroundSize: 'cover',
@@ -503,13 +503,13 @@ const Dashboard = () => {
         {/* Right Column */}
         <div className="space-y-4 sm:space-y-6">
           {/* Profile Card */}
-          <Card className="bg-[#c3dac4] border border-slate-500">
+          <Card className="bg-[#c3dac4] border border-slate-400/80">
             <CardContent className="p-4 md:p-4">
               <div className="flex flex-col items-center">
                 <img
                   src={getImageUrl(profileData.avatar)}
                   alt="Profile"
-                  className="rounded-lg mb-3 sm:mb-4 w-40 md:w-[20vw]"
+                  className="rounded-lg mb-3 sm:mb-4 w-40 md:w-[20vw] border border-gray-500"
                 />
                 <h2 className="text-lg sm:text-xl font-semibold text-[#2b4033]">
                   {profileData.name}
@@ -522,25 +522,25 @@ const Dashboard = () => {
                 <div className="w-full mt-4 sm:mt-4 space-y-2 sm:space-y-3">
                   <Button
                     onClick={() => navigate("/jobseeker/profile")}
-                    className="bg-[#dce2d4] hover:bg-[#c2c8bb] text-black w-full text-sm sm:text-base"
+                    className="bg-[#2b4033] hover:bg-[#1e3728] text-white w-full text-sm sm:text-base"
                   >
                     <Edit className="w-4 h-4 mr-2" />
                     Edit profile
                   </Button>
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white text-sm sm:text-base">
+                  {/* <Button className="w-full bg-green-500 hover:bg-green-600 text-white text-sm sm:text-base">
                     <IoIosRocket className="mr-2" />
                     Promote profile
                   </Button>
                   <Button className="w-full bg-[#2b4033] hover:bg-[#1e3728] text-sm sm:text-base">
                     <FaVideo className="mr-2" /> Get Interview Coaching
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Links Section */}
-          <Card className="border border-slate-500">
+          <Card className=" border border-slate-400/80">
             <CardContent className="p-4 md:p-4 space-y-3 sm:space-y-4">
               <div className="flex flex-row items-center gap-2">
                 <h2 className="text-lg font-semibold text-[#2b4033]">Links</h2>
@@ -557,7 +557,7 @@ const Dashboard = () => {
                     href={formatUrl(profileData.links[link.type])}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between border px-2 py-2 rounded bg-[#c3dac4] hover:bg-[#b2c9b3] transition-colors"
+                    className="flex items-center justify-between border border-gray-400 px-2 py-2 rounded bg-[#c3dac4] hover:bg-[#b2c9b3] transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       <link.icon className="text-gray-800 w-4 h-4 sm:w-5 sm:h-5" />
@@ -571,7 +571,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Upcoming Interviews Section */}
-          <Card className="border border-slate-500">
+          <Card className=" border border-slate-400/80">
             <CardHeader className="p-4 md:p-4">
               <h2 className="text-lg font-semibold text-[#2b4033]">Upcoming Interviews</h2>
               <p className="text-xs font-medium sm:text-sm text-[#2b4033]">
@@ -580,15 +580,15 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent className="px-4 pb-4 md:pb-4">
               {profileData.upComingInterviews.length === 0 ? (
-                <div className="border px-2 py-2 rounded bg-[#c3dac4]">
-                  <p className="text-black/50 text-xs md:text-sm">
+                <div className="border border-gray-400 px-4 py-4 rounded bg-[#c3dac4]">
+                  <p className="text-black/70 text-xs md:text-sm">
                     You currently do not have any upcoming interviews.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {profileData.upComingInterviews.map((interview, index) => (
-                    <div key={index} className="border px-2 py-2 rounded bg-[#c3dac4]">
+                    <div key={index} className="border border-gray-400 px-2 py-2 rounded bg-[#c3dac4]">
                       <h3 className="font-medium text-sm sm:text-base">{interview.position}</h3>
                       <p className="text-xs sm:text-sm text-gray-600">{interview.company}</p>
                       <div className="flex items-center space-x-2 mt-1 text-xs sm:text-sm text-gray-500">

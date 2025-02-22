@@ -98,3 +98,24 @@
 input[type="checkbox"] {
   accent-color: #abd2ab
 }
+
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .yes-scrollbar::-webkit-scrollbar {
+    display: block;
+  }
+
+  .yes-scrollbar {
+    -ms-overflow-style: auto;
+    scrollbar-width: '8px';
+  }
+}

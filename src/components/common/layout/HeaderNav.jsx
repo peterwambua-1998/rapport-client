@@ -97,7 +97,6 @@ const HeaderNav = () => {
   const jobseekerNavItems = [
     { to: "/jobseeker/dashboard", icon: FaHome, label: "Home" },
     { to: "/jobseeker/interview-prep", icon: FaLightbulb, label: "Interview-Prep" },
-    { to: "/jobseeker/job-matches", icon: FaHandshake, label: "Challenges" },
     { to: "/jobseeker/messages", icon: IoChatbubblesSharp, label: "Messaging" },
     { to: "/jobseeker/notifications", icon: FaBell, label: "Notifications" },
   ];
@@ -132,7 +131,7 @@ const HeaderNav = () => {
       : jobseekerNavItems;
 
   return (
-    <div className="relative z-10 w-full flex-shrink-0 flex h-16 items-center bg-[#c3dac4]">
+    <div className="relative z-10 w-full flex-shrink-0 flex h-16 items-center bg-[#c3dac4] border border-gray-400">
       <div className="flex items-center justify-between px-4 w-full">
         <div className="flex gap-4 items-center w-full">
           {/* Logo */}
