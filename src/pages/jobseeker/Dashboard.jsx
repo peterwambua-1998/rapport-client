@@ -388,8 +388,8 @@ const Dashboard = () => {
                       <div>
                         <h4 className="font-medium text-sm sm:text-base">{exp.position}</h4>
                         <p className="text-xs sm:text-sm text-gray-600">
-                          {exp.employer} · {format(exp.startDate, "MMM yyyy")} -{" "}
-                          {exp.currentlyWorking ? "Present" : format(exp.endDate, "MMM yyyy")}
+                          {exp.employer} · {exp.startDate} -{" "}
+                          {exp.currentlyWorking ? "Present" : exp.endDate}
                         </p>
                       </div>
                     </div>
@@ -411,8 +411,8 @@ const Dashboard = () => {
                       {education.degree} - {education.major}
                     </h4>
                     <p className="text-xs sm:text-sm text-gray-600">
-                      {education.school} · {format(new Date(education.startDate), "MMM yyyy")} -{" "}
-                      {format(new Date(education.endDate), "MMM yyyy")}
+                      {education.school} · {education.startDate} -{" "}
+                      {education.endDate}
                     </p>
                   </div>
                 ))}
