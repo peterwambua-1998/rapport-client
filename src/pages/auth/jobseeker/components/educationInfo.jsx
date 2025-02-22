@@ -263,8 +263,8 @@ const EducationInfo = ({ dataSourceResult, setActiveTab }) => {
                                     <h4 className="font-semibold">{education.school}</h4>
                                     <p className="text-sm text-gray-500">{education.degree} in {education.major}</p>
                                     <p className="text-xs sm:text-sm text-gray-500">
-                                        {format(new Date(education.startDate), "MMM yyyy")} -{" "}
-                                        {format(new Date(education.endDate), "MMM yyyy")}
+                                        {education.startDate} -{" "}
+                                        {education.endDate}
                                      </p>
                                     
                                 </div>

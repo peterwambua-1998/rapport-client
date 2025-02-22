@@ -258,8 +258,8 @@ const WorkExperienceInfo = ({ dataSourceResult, setActiveTab }) => {
                                 <h4 className="font-semibold">{exp.position}</h4>
                                 <p className="text-sm text-gray-500">{exp.employer}</p>
                                 <p className="text-sm text-gray-500">
-                                    {formatDate(exp.startDate, "MMM yyyy")} - {" "}
-                                    {exp.currentlyWorking ? "Present" : formatDate(exp.endDate, "MMM yyyy")}
+                                    {exp.startDate} - {" "}
+                                    {exp.currentlyWorking ? "Present" : exp.endDate}
                                 </p>
                                 <p className="text-sm mt-2">{exp.description}</p>
                             </div>
