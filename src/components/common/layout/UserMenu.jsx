@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   FaUserCircle,
@@ -10,12 +10,13 @@ import useAuth from "@/hooks/useAuth";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { getImageUrl } from "@/services/helpers/helpers";
 import avatar from '@/assets/profile.jpg'
-import { useUserProfile } from "@/context/userProfilePhoto";
+import defaultProfilePhoto from '@/assets/images/dummyImg.png'
+import { getProfile } from "@/services/api/api";
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout, loading } = useAuth();
-  const { photo } = useUserProfile();
+  const { user, logout } = useAuth();
+  const [photo, setPhoto] = useState(defaultProfilePhoto);
   const ref = useRef();
   useOnClickOutside(ref, () => setIsOpen(false));
   const handleLogout = () => {
@@ -23,9 +24,23 @@ const UserMenu = () => {
     setIsOpen(false);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        if (response.data.avatar) {
+          setPhoto(getImageUrl((response.data.avatar)))
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (!user) {
     return null;
@@ -59,7 +74,7 @@ const UserMenu = () => {
             {user.email || "No email provided"}
           </div>
           <div className="border-t border-gray-100"></div>
-         
+
           {user.role !== 'admin' && (
             <Link
               to={`/${user_role}/settings`}
