@@ -60,13 +60,13 @@ function App() {
           {/* { path: , element:  }, */}
         </Route>
         <Route
-            path="/jobseeker/introduction/profile"
-            element={
-              <ProtectedRoute role="job_seeker">
-               <IntroductionProfile />
-              </ProtectedRoute>
-            }
-          />
+          path="/jobseeker/introduction/profile"
+          element={
+            <ProtectedRoute role="job_seeker">
+              <IntroductionProfile />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Recruiter Routes with MainLayout */}
         <Route element={<MainLayout />}>
@@ -81,7 +81,7 @@ function App() {
               }
             />
           ))}
-          
+
         </Route>
 
         {/* Admin Routes with MainLayout */}
@@ -107,9 +107,7 @@ function App() {
 function AppWithAuth() {
   return (
     <AuthProvider>
-      <UserProfileProvider>
-        <App />
-      </UserProfileProvider>
+      <App />
     </AuthProvider>
   );
 }

@@ -28,8 +28,12 @@ const UserMenu = () => {
     const fetchProfile = async () => {
       try {
         const response = await getProfile();
-        if (response.data.avatar) {
-          setPhoto(getImageUrl((response.data.avatar)))
+        console.log(response.status);
+        
+        if (res.status !== 404) {
+          if (response.data.avatar) {
+            setPhoto(getImageUrl((response.data.avatar)))
+          }
         }
       } catch (err) {
         console.log(err);

@@ -424,7 +424,7 @@ const Dashboard = () => {
           <Card className="bg-[#c3dac4] border border-slate-300">
             <CardContent className="p-4 md:p-4">
               <h2 className="text-lg font-semibold mb-3 sm:mb-4 text-[#2b4033]">Certifications</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {profileData.certifications.map((cert, index) => (
                   <Card key={index} className="p-4">
                     <div className="flex items-center justify-between">
